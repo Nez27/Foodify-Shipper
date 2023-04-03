@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.capstone.foodify.shipper.Adapter.OrderAdapter;
+import com.capstone.foodify.shipper.Common;
 import com.capstone.foodify.shipper.Model.Order;
 import com.capstone.foodify.shipper.R;
 
@@ -22,6 +24,7 @@ public class OrderFragment extends Fragment {
     private List<Order> listOrders = new ArrayList<>();
     RecyclerView recyclerView;
     OrderAdapter orderAdapter;
+    TextView welcome_text;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,6 +34,11 @@ public class OrderFragment extends Fragment {
 
         //Init Component
         recyclerView = view.findViewById(R.id.rcv_list_order);
+        welcome_text = view.findViewById(R.id.welcome_text);
+
+        if(Common.CURRENT_USER != null){
+            welcome_text.setText("Xin chào, " + Common.CURRENT_USER.getFullName() + "!");
+        }
 
         orderAdapter = new OrderAdapter();
 
