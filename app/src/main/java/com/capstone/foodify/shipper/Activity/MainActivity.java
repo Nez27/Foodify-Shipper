@@ -45,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
                 int id = item.getItemId();
                 switch (id) {
                     case R.id.activity_order:
-                        viewPager2.setCurrentItem(0);
+                        viewPager2.setCurrentItem(0, false);
                         break;
                     case R.id.activity_profile:
-                        viewPager2.setCurrentItem(1);
+                        viewPager2.setCurrentItem(1, false);
                         break;
                 }
                 return false;
