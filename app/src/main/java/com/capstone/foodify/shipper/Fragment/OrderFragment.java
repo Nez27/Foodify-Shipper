@@ -15,6 +15,7 @@ import com.capstone.foodify.shipper.Adapter.OrderAdapter;
 import com.capstone.foodify.shipper.Common;
 import com.capstone.foodify.shipper.Model.Order;
 import com.capstone.foodify.shipper.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,5 +55,13 @@ public class OrderFragment extends Fragment {
         recyclerView.setAdapter(orderAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        //Update user name on textview
+        welcome_text.setText("Xin chào, " + Common.CURRENT_USER.getFullName() + "!");
     }
 }

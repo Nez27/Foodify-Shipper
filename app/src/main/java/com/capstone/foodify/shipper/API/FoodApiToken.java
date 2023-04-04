@@ -16,7 +16,9 @@ import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface FoodApiToken {
@@ -51,8 +53,8 @@ public interface FoodApiToken {
 //    @GET("users/{userId}/loves")
 //    Call<Foods> getListFavoriteFood(@Path("userId") int userId, @Query("pageNo") int pageNo, @Query("pageSize") int pageSize, @Query("sortBy") String sortBy, @Query("sortDir") String sortDir);
 //
-//    @PUT("users/{userId}")
-//    Call<User> updateUser(@Path("userId") int userId, @Body User user);
+    @PUT("users/{userId}")
+    Call<User> updateUser(@Path("userId") int userId, @Body User user);
 //
 //    @GET("users/{userId}/loves/{productId}")
 //    Call<CustomResponse> checkFoodIsFavorite(@Path("userId") int userId, @Path("productId") int productId);
