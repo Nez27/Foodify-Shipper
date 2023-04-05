@@ -1,11 +1,15 @@
 package com.capstone.foodify.shipper.Model;
 
-public class OrderDetail {
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public class OrderDetail implements Serializable {
     private int id;
-    private int orderId;
-    private int productId;
+    @SerializedName("product")
+    private Food food;
     private String quantity;
-    private float subTotal;
+    private float subtotal;
 
     public int getId() {
         return id;
@@ -13,22 +17,6 @@ public class OrderDetail {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
-    }
-
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
     }
 
     public String getQuantity() {
@@ -39,11 +27,19 @@ public class OrderDetail {
         this.quantity = quantity;
     }
 
-    public float getSubTotal() {
-        return subTotal;
+    public float getSubtotal() {
+        return subtotal;
     }
 
-    public void setSubTotal(float subTotal) {
-        this.subTotal = subTotal;
+    public void setSubtotal(float subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public Food getFood() {
+        return food;
+    }
+
+    public void setFood(Food food) {
+        this.food = food;
     }
 }

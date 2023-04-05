@@ -1,27 +1,23 @@
 package com.capstone.foodify.shipper.Model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Order {
+public class Order implements Serializable {
     private int id;
     private String orderTrackingNumber;
-    private int shipperId;
     private String paymentMethod;
     private float shippingCost;
+    private float productCost;
     private String status;
     private String address;
+    private User user;
+    private Shipper shipper;
     private List<OrderDetail> orderDetails;
-
-    public Order(String orderTrackingNumber, int shipperId, String paymentMethod, float shippingCost, String status, String address, List<OrderDetail> orderDetails) {
-        this.orderTrackingNumber = orderTrackingNumber;
-        this.shipperId = shipperId;
-        this.paymentMethod = paymentMethod;
-        this.shippingCost = shippingCost;
-        this.status = status;
-        this.address = address;
-        this.orderDetails = orderDetails;
-    }
-
+    private String orderTime;
+    private float  total;
+    private double lat;
+    private double lng;
     public int getId() {
         return id;
     }
@@ -39,14 +35,6 @@ public class Order {
 
     public void setOrderTrackingNumber(String orderTrackingNumber) {
         this.orderTrackingNumber = orderTrackingNumber;
-    }
-
-    public int getShipperId() {
-        return shipperId;
-    }
-
-    public void setShipperId(int shipperId) {
-        this.shipperId = shipperId;
     }
 
     public String getPaymentMethod() {
@@ -95,5 +83,61 @@ public class Order {
 
     public void setListOrderDetail(List<OrderDetail> listOrderDetail) {
         this.orderDetails = listOrderDetail;
+    }
+
+    public float getProductCost() {
+        return productCost;
+    }
+
+    public void setProductCost(float productCost) {
+        this.productCost = productCost;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Shipper getShipper() {
+        return shipper;
+    }
+
+    public void setShipper(Shipper shipper) {
+        this.shipper = shipper;
+    }
+
+    public String getOrderTime() {
+        return orderTime;
+    }
+
+    public void setOrderTime(String orderTime) {
+        this.orderTime = orderTime;
+    }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }

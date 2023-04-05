@@ -14,8 +14,10 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.splashscreen.SplashScreen;
 
+import com.capstone.foodify.shipper.API.FoodApi;
 import com.capstone.foodify.shipper.API.FoodApiToken;
 import com.capstone.foodify.shipper.Common;
+import com.capstone.foodify.shipper.Model.Shipper;
 import com.capstone.foodify.shipper.Model.User;
 import com.capstone.foodify.shipper.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -59,35 +61,8 @@ public class SignInActivity extends AppCompatActivity {
 
         if (user != null && Common.CURRENT_USER == null) {
             progressLayout.setVisibility(View.VISIBLE);
-            user.getIdToken(true)
-                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<GetTokenResult> task) {
-                            if (task.isSuccessful()) {
-                                Common.TOKEN = task.getResult().getToken();
 
-                                //Get user from database
-                                FoodApiToken.apiService.getUserFromEmail(user.getEmail()).enqueue(new Callback<User>() {
-                                    @Override
-                                    public void onResponse(Call<User> call, Response<User> response) {
-                                        User userData = response.body();
-                                        if (userData != null) {
-                                            Common.CURRENT_USER = userData;
-                                            startActivity(new Intent(SignInActivity.this, MainActivity.class));
-
-                                            progressLayout.setVisibility(View.GONE);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<User> call, Throwable t) {
-                                    }
-                                });
-                            } else {
-                                Toast.makeText(SignInActivity.this, "Error when taking token!", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+            getInformationAndSignInUser(user);
         }
     }
 
@@ -107,10 +82,6 @@ public class SignInActivity extends AppCompatActivity {
         //Init Component
         initComponent();
         setFontUI();
-
-        if(Common.CURRENT_USER != null)
-            startActivity(new Intent(this, MainActivity.class));
-
         btn_sign_in.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,66 +144,7 @@ public class SignInActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            //Save user
-//                            Paper.book().write("user", user);
-
-                            user.getIdToken(true)
-                                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<GetTokenResult> task) {
-                                            if(task.isSuccessful()){
-                                                Common.TOKEN = task.getResult().getToken();
-
-                                                //Get user from database
-                                                FoodApiToken.apiService.getUserFromEmail(user.getEmail()).enqueue(new Callback<User>() {
-                                                    @Override
-                                                    public void onResponse(Call<User> call, Response<User> response) {
-                                                        if(response.code() == 200){
-
-                                                            User userData = response.body();
-                                                            if(userData != null){
-
-                                                                //Check user is lock or not
-                                                                if(!userData.isLocked()){
-
-                                                                    //Check role account
-                                                                    if(userData.getRole().getRoleName().equals("ROLE_USER")){
-                                                                        Common.CURRENT_USER = userData;
-
-                                                                        //Dismiss progress bar
-                                                                        progressLayout.setVisibility(View.GONE);
-
-                                                                        startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                                                                        finish();
-                                                                    } else {
-                                                                        Toast.makeText(SignInActivity.this, "Tài khoản không hợp lệ! Vui lòng kiểm tra lại!", Toast.LENGTH_SHORT).show();
-                                                                        FirebaseAuth.getInstance().signOut();
-
-                                                                        //Dismiss progress bar
-                                                                        progressLayout.setVisibility(View.GONE);
-                                                                    }
-                                                                } else {
-                                                                    Toast.makeText(SignInActivity.this, "Tài khoản của bạn đã bị khoá!", Toast.LENGTH_SHORT).show();
-                                                                    FirebaseAuth.getInstance().signOut();
-
-                                                                    //Dismiss progress bar
-                                                                    progressLayout.setVisibility(View.GONE);
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-
-                                                    @Override
-                                                    public void onFailure(Call<User> call, Throwable t) {
-                                                        System.out.println("ERROR: " + t);
-                                                        Common.showErrorServerNotification(SignInActivity.this, "Không thể đăng nhập tài khoản! Vui lòng thử lại sau!");
-                                                    }
-                                                });
-                                            } else {
-                                                Toast.makeText(SignInActivity.this, "Error when taking token!", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
+                            getInformationAndSignInUser(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(SignInActivity.this, "Thông tin đăng nhập không đúng! Vui lòng kiểm tra và thử lại!",
@@ -240,6 +152,66 @@ public class SignInActivity extends AppCompatActivity {
 
                             //Dismiss progress bar
                             progressLayout.setVisibility(View.GONE);
+                        }
+                    }
+                });
+    }
+
+    private void getInformationAndSignInUser(FirebaseUser user) {
+        user.getIdToken(true)
+                .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+                        if(task.isSuccessful()){
+                            Common.TOKEN = task.getResult().getToken();
+
+                            //Get user from database
+                            FoodApiToken.apiService.getUserFromEmail(user.getEmail()).enqueue(new Callback<User>() {
+                                @Override
+                                public void onResponse(Call<User> call, Response<User> response) {
+                                    if(response.code() == 200){
+
+                                        User userData = response.body();
+                                        if(userData != null){
+
+                                            //Check user is lock or not
+                                            if(!userData.isLocked()){
+
+                                                //Check role account
+                                                if(userData.getRole().getRoleName().equals("ROLE_SHIPPER")){
+                                                    Common.CURRENT_USER = userData;
+
+                                                    //Get shipper id
+                                                    getShipperId(userData.getId());
+
+                                                    startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                                                    finish();
+                                                } else {
+                                                    Toast.makeText(SignInActivity.this, "Tài khoản không hợp lệ! Vui lòng kiểm tra lại!", Toast.LENGTH_SHORT).show();
+                                                    FirebaseAuth.getInstance().signOut();
+
+                                                    //Dismiss progress bar
+                                                    progressLayout.setVisibility(View.GONE);
+                                                }
+                                            } else {
+                                                Toast.makeText(SignInActivity.this, "Tài khoản của bạn đã bị khoá!", Toast.LENGTH_SHORT).show();
+                                                FirebaseAuth.getInstance().signOut();
+
+                                                //Dismiss progress bar
+                                                progressLayout.setVisibility(View.GONE);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<User> call, Throwable t) {
+                                    System.out.println("ERROR: " + t);
+                                    Common.showErrorServerNotification(SignInActivity.this, "Không thể đăng nhập tài khoản! Vui lòng thử lại sau!");
+                                }
+                            });
+                        } else {
+                            Toast.makeText(SignInActivity.this, "Error when taking token!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -299,5 +271,23 @@ public class SignInActivity extends AppCompatActivity {
         }
 
         return dataHasValidate;
+    }
+
+    private void getShipperId(int userId){
+        FoodApi.apiService.getShipper(userId).enqueue(new Callback<Shipper>() {
+            @Override
+            public void onResponse(Call<Shipper> call, Response<Shipper> response) {
+                if(response.code() == 200){
+                    Common.CURRENT_SHIPPER = response.body();
+                    //Dismiss progress bar
+                    progressLayout.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Shipper> call, Throwable t) {
+                Toast.makeText(SignInActivity.this, Common.ERROR_CONNECT_SERVER, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
