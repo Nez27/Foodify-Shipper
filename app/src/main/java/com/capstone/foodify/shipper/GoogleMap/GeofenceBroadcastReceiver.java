@@ -1,13 +1,17 @@
 package com.capstone.foodify.shipper.GoogleMap;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.capstone.foodify.shipper.Activity.OrderDetailActivity;
 import com.capstone.foodify.shipper.Common;
+import com.capstone.foodify.shipper.Model.Order;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
@@ -21,6 +25,7 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
+        NotificationHelper notificationHelper = new NotificationHelper(context);
 
         if (geofencingEvent.hasError()) {
             Log.d(TAG, "onReceive: Error receiving geofence event...");
@@ -34,15 +39,11 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
         int transitionType = geofencingEvent.getGeofenceTransition();
 
-        switch (transitionType) {
-            case Geofence.GEOFENCE_TRANSITION_ENTER:
-                Intent newIntent = new Intent(context.getApplicationContext(), OrderDetailActivity.class);
-                newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                newIntent.putExtra("order", Common.CURRENT_ORDER);
-                newIntent.putExtra("status", Common.SHIPPING_COMPLETED);
-                context.startActivity(newIntent);
-                break;
+        if(transitionType == Geofence.GEOFENCE_TRANSITION_ENTER){
+            notificationHelper.sendHighPriorityNotification("Đã tới khu vực giao!", "Nhấp vào đây để quay về app!", OrderDetailActivity.class);
         }
+
+
 
     }
 }

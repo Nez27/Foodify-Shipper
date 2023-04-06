@@ -278,7 +278,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Shipper> call, Response<Shipper> response) {
                 if(response.code() == 200){
-                    Common.CURRENT_SHIPPER = response.body();
+                        Common.CURRENT_SHIPPER = response.body();
                     //Dismiss progress bar
                     progressLayout.setVisibility(View.GONE);
                 }

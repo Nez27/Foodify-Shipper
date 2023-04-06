@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.splashscreen.SplashScreen;
@@ -23,6 +24,7 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.capstone.foodify.shipper.BuildConfig;
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationCallback mLocationCallBack;
     private Location mCurrentLocation;
     private boolean mRequestingLocationUpdates = false;
+    private ConstraintLayout progressLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,50 +80,15 @@ public class MainActivity extends AppCompatActivity {
         //Init Component
         bottomNavigationView = findViewById(R.id.bottom_nav);
         viewPager2 = findViewById(R.id.viewPager);
+        progressLayout = findViewById(R.id.progress_layout);
 
         bottomNavigation();
 
         if (Common.CURRENT_LOCATION == null) {
-            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-            mSettingsClient = LocationServices.getSettingsClient(this);
-
-            mLocationCallBack = new LocationCallback() {
-                @Override
-                public void onLocationResult(@NonNull LocationResult locationResult) {
-                    super.onLocationResult(locationResult);
-                    mCurrentLocation = locationResult.getLastLocation();
-                    Common.CURRENT_LOCATION = mCurrentLocation;
-                }
-            };
-
-            mLocationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, UPDATE_INTERVAL_IN_MILLISECONDS)
-                    .setWaitForAccurateLocation(false)
-                    .setMinUpdateDistanceMeters(FASTEST_UPDATE_IN_MILLISECONDS)
-                    .setMaxUpdateDelayMillis(MAX_WAIT_TIME_IN_MILLISECONDS)
-                    .build();
-
-            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-            builder.addLocationRequest(mLocationRequest);
-            mLocationSettingsRequest = builder.build();
-
-            checkLocationPermission();
-
+            getLocation();
         }
 
-        //Init location user
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(mCurrentLocation != null){
-                    Common.CURRENT_LOCATION = mCurrentLocation;
-                    stopLocationUpdates();
-                }
-
-            }
-        }, 3000);
     }
-
     private void bottomNavigation() {
         viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager2.setAdapter(viewPagerAdapter);
@@ -160,6 +128,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Location
+
+    private void getLocation() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mSettingsClient = LocationServices.getSettingsClient(this);
+
+        mLocationCallBack = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                mCurrentLocation = locationResult.getLastLocation();
+                Common.CURRENT_LOCATION = mCurrentLocation;
+                stopLocationUpdates();
+                progressLayout.setVisibility(View.GONE);
+            }
+        };
+
+        mLocationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, UPDATE_INTERVAL_IN_MILLISECONDS)
+                .setWaitForAccurateLocation(false)
+                .setMinUpdateDistanceMeters(FASTEST_UPDATE_IN_MILLISECONDS)
+                .setMaxUpdateDelayMillis(MAX_WAIT_TIME_IN_MILLISECONDS)
+                .build();
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        mLocationSettingsRequest = builder.build();
+
+        checkLocationPermission();
+    }
     private void checkLocationPermission(){
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
@@ -229,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                 mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallBack, Looper.myLooper());
-
             }
         }).addOnFailureListener(this, new OnFailureListener() {
             @Override
@@ -268,21 +263,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mRequestingLocationUpdates && checkPermission() && Common.CURRENT_LOCATION == null) {
+        getLocation();
+        if (mRequestingLocationUpdates && checkPermission()) {
             startLocationUpdates();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mRequestingLocationUpdates) {
-            stopLocationUpdates();
-
-            if(Common.CURRENT_LOCATION == null){
-                if(mCurrentLocation != null)
-                    Common.CURRENT_LOCATION = mCurrentLocation;
-            }
         }
     }
 }

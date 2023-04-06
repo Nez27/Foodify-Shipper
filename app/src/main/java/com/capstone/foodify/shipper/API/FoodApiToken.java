@@ -3,6 +3,7 @@ package com.capstone.foodify.shipper.API;
 import androidx.annotation.NonNull;
 
 import com.capstone.foodify.shipper.Common;
+import com.capstone.foodify.shipper.Model.CustomResponse;
 import com.capstone.foodify.shipper.Model.Response.Orders;
 import com.capstone.foodify.shipper.Model.User;
 import com.google.gson.Gson;
@@ -51,4 +52,7 @@ public interface FoodApiToken {
 
     @GET("shippers/{shipperId}/orders")
     Call<Orders> getListOrder(@Path("shipperId") int shipperId, @Query("pageNo") int pageNo, @Query("pageSize") int pageSize, @Query("sortBy") String sortBy, @Query("sortDir") String sortDir);
+
+    @PUT("users/{userId}/orders/{orderId}/status")
+    Call<CustomResponse> changeStatusOrder(@Path("userId") int userId, @Path("orderId") int orderId, @Query("status") String status);
 }
