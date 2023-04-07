@@ -56,6 +56,7 @@ public class CompletedOrder extends Fragment {
 
         orderAdapter = new OrderAdapter(getActivity());
 
+        CURRENT_PAGE = 0;
         getListOrder();
 
 

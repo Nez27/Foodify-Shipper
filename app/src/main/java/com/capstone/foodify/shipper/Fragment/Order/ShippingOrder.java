@@ -56,6 +56,7 @@ public class ShippingOrder extends Fragment {
 
         orderAdapter = new OrderAdapter(getActivity());
 
+        CURRENT_PAGE = 0;
         getListOrder();
 
 

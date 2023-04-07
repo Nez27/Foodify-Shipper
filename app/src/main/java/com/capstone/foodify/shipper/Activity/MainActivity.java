@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigation();
         checkLocationPermission();
+        checkBackgroundLocationPermission();
     }
     private void bottomNavigation() {
         viewPagerAdapter = new ViewPagerAdapter(this);
@@ -92,24 +93,39 @@ public class MainActivity extends AppCompatActivity {
             requestForPermission();
         }
     }
+    
+    private void checkBackgroundLocationPermission(){
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setMessage("Vui lòng cho phép ứng dụng truy cập vị mọi lúc để hoạt động tốt nhất!")
+                    .setCancelable(false)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            openSettings();
+                            finishAffinity();
+                            System.exit(0);
+                        }
+                    })
+                    .setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                            finishAffinity();
+                            System.exit(0);
+                        }
+                    });
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.setTitle("Thông báo!");
+            alertDialog.show();
+        }
+    }
 
     private void requestForPermission() {
         ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if(requestCode == LOCATION_REQUEST_CODE){
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, "Đã cấp quyền thành công!", Toast.LENGTH_SHORT).show();
-            } else {
-                showDialogPermission();
-            }
-        }
-    }
-
     private void showDialogPermission() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 

@@ -35,7 +35,14 @@ public class Common {
     public static final String ERROR_CONNECT_SERVER = "Đã có lỗi kết nối đến hệ thống!";
     public static final List<Order> LIST_ORDER = new ArrayList<>();
     public static final String SHIPPING_COMPLETED = "1";
-
+    public static final int REQUEST_CHECK_SETTINGS = 100;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    public static final long FASTEST_UPDATE_IN_MILLISECONDS = 3000;
+    public static final long MAX_WAIT_TIME_IN_MILLISECONDS = 1000;
+    public static final int LOCATION_REQUEST_CODE = 100;
+    public static final int LOCATION_SERVICE_ID = 175;
+    public static final String ACTION_START_LOCATION_SERVICE = "startLocationService";
+    public static final String ACTION_STOP_LOCATION_SERVICE = "stopLocationService";
     public static Typeface setFontBebas(AssetManager assetManager){
         return Typeface.createFromAsset(assetManager, "font/bebas.ttf");
     }

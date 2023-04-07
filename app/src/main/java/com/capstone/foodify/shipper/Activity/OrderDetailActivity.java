@@ -1,8 +1,18 @@
 package com.capstone.foodify.shipper.Activity;
 
+import static com.capstone.foodify.shipper.Common.ACTION_START_LOCATION_SERVICE;
+import static com.capstone.foodify.shipper.Common.ACTION_STOP_LOCATION_SERVICE;
+import static com.capstone.foodify.shipper.Common.FASTEST_UPDATE_IN_MILLISECONDS;
+import static com.capstone.foodify.shipper.Common.LOCATION_REQUEST_CODE;
+import static com.capstone.foodify.shipper.Common.MAX_WAIT_TIME_IN_MILLISECONDS;
+import static com.capstone.foodify.shipper.Common.REQUEST_CHECK_SETTINGS;
+import static com.capstone.foodify.shipper.Common.UPDATE_INTERVAL_IN_MILLISECONDS;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -35,6 +45,7 @@ import com.capstone.foodify.shipper.Adapter.OrderDetailAdapter;
 import com.capstone.foodify.shipper.BuildConfig;
 import com.capstone.foodify.shipper.Common;
 import com.capstone.foodify.shipper.GoogleMap.GeofenceHelper;
+import com.capstone.foodify.shipper.LocationService;
 import com.capstone.foodify.shipper.Model.CustomResponse;
 import com.capstone.foodify.shipper.Model.GoogleMap.GoogleMapResponse;
 import com.capstone.foodify.shipper.Model.Order;
@@ -88,11 +99,6 @@ public class OrderDetailActivity extends AppCompatActivity {
     private float GEOFENCE_RADIUS = 150;
     private String GEOFENCE_ID = "SOME_GEOFENCE_ID";
     //Location
-    private static final int REQUEST_CHECK_SETTINGS = 100;
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-    private static final long FASTEST_UPDATE_IN_MILLISECONDS = 3000;
-    private static final long MAX_WAIT_TIME_IN_MILLISECONDS = 1000;
-    private static final int LOCATION_REQUEST_CODE = 100;
     private FusedLocationProviderClient mFusedLocationClient;
     private SettingsClient mSettingClient;
     private LocationRequest mLocationRequest;
@@ -126,9 +132,6 @@ public class OrderDetailActivity extends AppCompatActivity {
         initData();
 
 
-
-        progressLayout.setVisibility(View.GONE);
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         rcv_list_order.setLayoutManager(linearLayoutManager);
 
@@ -151,6 +154,8 @@ public class OrderDetailActivity extends AppCompatActivity {
 
                     Common.CURRENT_ORDER = order;
 
+                    startLocationService();
+
                     Intent intent = new Intent(Intent.ACTION_VIEW,
                             Uri.parse("google.navigation:q=" + order.getLat() + "," + order.getLng() + "&mode=l"));
                     intent.setPackage("com.google.android.apps.maps");
@@ -171,6 +176,7 @@ public class OrderDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 changeOrderStatus(COMPLETE_STATUS);
+                stopLocationService();
             }
         });
 
@@ -338,10 +344,9 @@ public class OrderDetailActivity extends AppCompatActivity {
                 * Math.sin(dLon / 2);
         double c = 2 * Math.asin(Math.sqrt(a));
         double valueResult = Radius * c;
-        double km = valueResult / 1;
         DecimalFormat newFormat = new DecimalFormat("####");
 
-        return Integer.valueOf(newFormat.format(km));
+        return Integer.parseInt(newFormat.format(valueResult));
     }
 
     /** calculates the distance between two locations in MILES */
@@ -367,6 +372,39 @@ public class OrderDetailActivity extends AppCompatActivity {
 
     //Location
 
+    @SuppressWarnings("deprecation")
+    private boolean isLocationServiceRunning(){
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if(activityManager != null){
+            for(ActivityManager.RunningServiceInfo service:
+                    activityManager.getRunningServices(Integer.MAX_VALUE)){
+                if(LocationService.class.getName().equals(service.service.getClassName())){
+                    if(service.foreground){
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private void startLocationService(){
+        if(!isLocationServiceRunning()){
+            Intent intent = new Intent(getApplicationContext(), LocationService.class);
+            intent.setAction(ACTION_START_LOCATION_SERVICE);
+            startService(intent);
+        }
+    }
+
+    private void stopLocationService(){
+        if(isLocationServiceRunning()){
+            Intent intent = new Intent(getApplicationContext(), LocationService.class);
+            intent.setAction(ACTION_STOP_LOCATION_SERVICE);
+            startService(intent);
+        }
+    }
+
     private void getLocation() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mSettingClient = LocationServices.getSettingsClient(this);
@@ -376,31 +414,21 @@ public class OrderDetailActivity extends AppCompatActivity {
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 super.onLocationResult(locationResult);
 
+                stopLocationUpdates();
                 mCurrentLocation = locationResult.getLastLocation();
 
                 Common.CURRENT_LOCATION = mCurrentLocation;
                 getDistanceAndCalculateShipCost(order.getAddress());
 
-                double lat1 = mCurrentLocation.getLatitude();
-                double lng1 = mCurrentLocation.getLongitude();
-                double lat2 = order.getLat();
-                double lng2 = order.getLng();
-
-                if(distance(lat1, lng1, lat2, lng2) < 0.2){
-                    btn_shipping.setVisibility(View.GONE);
-                    layoutConfirmOrder.setVisibility(View.VISIBLE);
-                } else {
-                    btn_shipping.setVisibility(View.VISIBLE);
-                    layoutConfirmOrder.setVisibility(View.GONE);
-                }
+                changeLayoutButton(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
                 progressLayout.setVisibility(View.GONE);
             }
         };
 
-        mLocationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, UPDATE_INTERVAL_IN_MILLISECONDS)
+        mLocationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 4000)
                 .setWaitForAccurateLocation(false)
-                .setMinUpdateDistanceMeters(FASTEST_UPDATE_IN_MILLISECONDS)
+                .setMinUpdateIntervalMillis(2000)
                 .setMaxUpdateDelayMillis(MAX_WAIT_TIME_IN_MILLISECONDS)
                 .build();
 
@@ -408,69 +436,17 @@ public class OrderDetailActivity extends AppCompatActivity {
         builder.addLocationRequest(mLocationRequest);
         mLocationSettingsRequest = builder.build();
 
-        checkLocationPermission();
+        startLocationUpdates();
     }
 
-    private void checkLocationPermission(){
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-
-            requestForPermission();
-
-        }else {
-            //Get location
-            mRequestingLocationUpdates = true;
-            startLocationUpdates();
+    private void changeLayoutButton(double lat1, double lng1) {
+        if(distance(lat1, lng1, order.getLat(), order.getLng()) < 0.2){
+            btn_shipping.setVisibility(View.GONE);
+            layoutConfirmOrder.setVisibility(View.VISIBLE);
+        } else {
+            btn_shipping.setVisibility(View.VISIBLE);
+            layoutConfirmOrder.setVisibility(View.GONE);
         }
-    }
-
-    private void requestForPermission() {
-        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if(requestCode == LOCATION_REQUEST_CODE){
-            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, "Đã cấp quyền thành công!", Toast.LENGTH_SHORT).show();
-            } else {
-                showDialogPermission();
-            }
-        }
-    }
-
-    private void showDialogPermission() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setMessage("Hãy cho ứng dụng truy cập vào vị trí của bạn để trải nghiệm tốt hơn!")
-                .setCancelable(false)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        openSettings();
-                        dialog.cancel();
-                    }
-                })
-                .setNegativeButton("Để sau", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.setTitle("Thông báo!");
-        alertDialog.show();
-    }
-    private void openSettings(){
-        Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null);
-        intent.setData(uri);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
     }
 
     private void startLocationUpdates(){
@@ -511,25 +487,12 @@ public class OrderDetailActivity extends AppCompatActivity {
         mFusedLocationClient.removeLocationUpdates(mLocationCallBack).addOnCompleteListener(this, task -> Log.d(TAG, "Location stop update!"));
     }
 
-    private boolean checkPermissions(){
-        int permissionState = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        return permissionState == PackageManager.PERMISSION_GRANTED;
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        progressLayout.setVisibility(View.VISIBLE);
-        if(mRequestingLocationUpdates && checkPermissions()){
-            startLocationUpdates();
-        }
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if(mRequestingLocationUpdates){
-            stopLocationUpdates();
+        if(Common.CURRENT_LOCATION != null){
+            changeLayoutButton(Common.CURRENT_LOCATION.getLatitude(), Common.CURRENT_LOCATION.getLongitude());
         }
     }
 }

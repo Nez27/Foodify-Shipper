@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,13 +15,14 @@ import com.capstone.foodify.shipper.Common;
 import com.capstone.foodify.shipper.Model.Order;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
+import com.google.android.gms.location.LocationResult;
 
 import java.util.List;
 
 public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
     private static final String TAG = "GeofenceBroadcastReceive";
-
+    public static final String ACTION_PROCESS_UPDATE = "com.capstone.foodify.shipper.GoogleMap.UPDATE_LOCATION";
     @Override
     public void onReceive(Context context, Intent intent) {
 
