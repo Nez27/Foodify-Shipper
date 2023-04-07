@@ -80,16 +80,13 @@ public class CompletedOrder extends Fragment {
 
     private void getListOrder(){
         if(Common.CURRENT_SHIPPER != null){
-            FoodApiToken.apiService.getListOrder(Common.CURRENT_SHIPPER.getId(), CURRENT_PAGE++, PAGE_SIZE, SORT_BY, SORT_DIR).enqueue(new Callback<Orders>() {
+            FoodApiToken.apiService.getListOrder(Common.CURRENT_SHIPPER.getId(), "COMPLETED", CURRENT_PAGE++, PAGE_SIZE, SORT_BY, SORT_DIR).enqueue(new Callback<Orders>() {
                 @Override
                 public void onResponse(Call<Orders> call, Response<Orders> response) {
                     if(response.code() == 200){
 
-                        for(Order tempOrder: response.body().getOrders()){
-                            if(tempOrder.getStatus().equals("COMPLETED")){
-                                listOrders.add(tempOrder);
-                            }
-                        }
+                        listOrders.addAll(response.body().getOrders());
+
                         orderAdapter.setData(listOrders);
 
                         LAST_PAGE = response.body().getPage().isLast();

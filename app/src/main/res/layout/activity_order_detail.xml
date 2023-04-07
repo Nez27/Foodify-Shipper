@@ -64,7 +64,7 @@
 
             <TextView
                 android:id="@+id/textView2"
-                android:text="Thông tin người giao"
+                android:text="Thông tin người nhận"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/bebas"
@@ -258,7 +258,7 @@
 
                 <TextView
                     android:id="@+id/txt_distance"
-                    android:text="10 km"
+                    android:text="- km"
                     android:fontFamily="@font/opensans"
                     android:textStyle="bold"
                     android:layout_marginTop="5dp"
@@ -362,6 +362,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:drawableLeft="@drawable/baseline_local_shipping_24"
                 android:drawableTint="@color/white"
+                android:visibility="gone"
                 />
 
             <LinearLayout
@@ -373,7 +374,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="20dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 >
 
 
@@ -410,6 +411,24 @@
                     android:textColor="@color/white"
                     app:iconGravity="textStart"
                     android:drawableLeft="@drawable/baseline_verified_24"
+                    android:drawableTint="@color/white"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_cancel_order"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:backgroundTint="@color/red"
+                    android:layout_marginTop="10dp"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/opensans"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:text="Không giao được"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:iconGravity="textStart"
+                    android:drawableLeft="@drawable/baseline_cancel_24"
                     android:drawableTint="@color/white"/>
 
 

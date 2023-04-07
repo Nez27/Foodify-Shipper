@@ -11,10 +11,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.capstone.foodify.shipper.Activity.MainActivity;
 import com.capstone.foodify.shipper.Activity.OrderDetailActivity;
 import com.capstone.foodify.shipper.Common;
 import com.capstone.foodify.shipper.Model.Order;
 import com.capstone.foodify.shipper.R;
+import com.thecode.aestheticdialogs.AestheticDialog;
+import com.thecode.aestheticdialogs.DialogStyle;
+import com.thecode.aestheticdialogs.DialogType;
+import com.thecode.aestheticdialogs.OnDialogClickListener;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -57,9 +62,26 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity, OrderDetailActivity.class);
-                intent.putExtra("order", order);
-                activity.startActivity(intent);
+
+                if(activity instanceof MainActivity){
+                    if(((MainActivity)activity).checkPermission()){
+                        Intent intent = new Intent(activity, OrderDetailActivity.class);
+                        intent.putExtra("order", order);
+                        activity.startActivity(intent);
+                    } else {
+                        new AestheticDialog.Builder(activity, DialogStyle.TOASTER, DialogType.WARNING)
+                                .setTitle("THÔNG BÁO!")
+                                .setMessage("Bạn cần cấp quyền vị trí cho ứng dụng để có thể tiếp tục!")
+                                .setCancelable(false)
+                                .setOnClickListener(new OnDialogClickListener() {
+                                    @Override
+                                    public void onClick(@NonNull AestheticDialog.Builder builder) {
+                                        builder.dismiss();
+                                    }
+                                }).show();
+                    }
+                }
+
             }
         });
     }

@@ -50,9 +50,10 @@ public interface FoodApiToken {
     @PUT("users/{userId}")
     Call<User> updateUser(@Path("userId") int userId, @Body User user);
 
-    @GET("shippers/{shipperId}/orders")
-    Call<Orders> getListOrder(@Path("shipperId") int shipperId, @Query("pageNo") int pageNo, @Query("pageSize") int pageSize, @Query("sortBy") String sortBy, @Query("sortDir") String sortDir);
+    @GET("shippers/{shipperId}/orders/status")
+    Call<Orders> getListOrder(@Path("shipperId") int shipperId, @Query("status") String status ,@Query("pageNo") int pageNo, @Query("pageSize") int pageSize, @Query("sortBy") String sortBy, @Query("sortDir") String sortDir);
 
     @PUT("users/{userId}/orders/{orderId}/status")
     Call<CustomResponse> changeStatusOrder(@Path("userId") int userId, @Path("orderId") int orderId, @Query("status") String status);
+
 }

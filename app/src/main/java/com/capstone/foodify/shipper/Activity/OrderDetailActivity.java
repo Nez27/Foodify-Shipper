@@ -15,6 +15,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,9 +73,10 @@ import retrofit2.Response;
 public class OrderDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "OrderDetailActivity";
-    private static final String STATUS = "COMPLETED";
+    private static final String COMPLETE_STATUS = "COMPLETED";
+    private static final String CANCEL_STATUS = "REJECT_DELIVERY";
     Order order;
-    Button btn_shipping, btn_call, btn_confirm_ship_completed;
+    Button btn_shipping, btn_call, btn_confirm_ship_completed, btn_cancel_order;
     TextView order_tracking_number, txt_user_name, txt_phone, txt_address, txt_distance, txt_status, txt_total,
                     txt_order_time;
     ConstraintLayout progressLayout;
@@ -98,6 +100,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     private LocationCallback mLocationCallBack;
     private Location mCurrentLocation;
     private boolean mRequestingLocationUpdates = false;
+    private ImageView back_image;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +126,7 @@ public class OrderDetailActivity extends AppCompatActivity {
         initData();
 
 
-        getDistanceAndCalculateShipCost(order.getAddress());
+
         progressLayout.setVisibility(View.GONE);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
@@ -132,6 +135,13 @@ public class OrderDetailActivity extends AppCompatActivity {
         adapter.setData(order.getOrderDetails());
         rcv_list_order.setAdapter(adapter);
 
+        back_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(OrderDetailActivity.this, MainActivity.class));
+                finish();
+            }
+        });
         btn_shipping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,7 +170,14 @@ public class OrderDetailActivity extends AppCompatActivity {
         btn_confirm_ship_completed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeOrderStatus();
+                changeOrderStatus(COMPLETE_STATUS);
+            }
+        });
+
+        btn_cancel_order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeOrderStatus(CANCEL_STATUS);
             }
         });
 
@@ -172,8 +189,8 @@ public class OrderDetailActivity extends AppCompatActivity {
         getLocation();
     }
 
-    private void changeOrderStatus(){
-        FoodApiToken.apiService.changeStatusOrder(order.getUser().getId(), order.getId(), STATUS).enqueue(new Callback<CustomResponse>() {
+    private void changeOrderStatus(String status){
+        FoodApiToken.apiService.changeStatusOrder(order.getUser().getId(), order.getId(), status).enqueue(new Callback<CustomResponse>() {
             @Override
             public void onResponse(Call<CustomResponse> call, Response<CustomResponse> response) {
                 if(response.code() == 200){
@@ -194,7 +211,7 @@ public class OrderDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CustomResponse> call, Throwable t) {
-
+                Toast.makeText(OrderDetailActivity.this, Common.ERROR_CONNECT_SERVER, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -204,6 +221,7 @@ public class OrderDetailActivity extends AppCompatActivity {
         btn_shipping = findViewById(R.id.btn_shipping);
         btn_call = findViewById(R.id.btn_call);
         btn_confirm_ship_completed = findViewById(R.id.btn_confirm_ship_complete);
+        btn_cancel_order = findViewById(R.id.btn_cancel_order);
 
         txt_address = findViewById(R.id.txt_address);
         order_tracking_number = findViewById(R.id.order_tracking_number);
@@ -219,6 +237,8 @@ public class OrderDetailActivity extends AppCompatActivity {
         layoutConfirmOrder = findViewById(R.id.layout1);
 
         progressLayout = findViewById(R.id.progress_layout);
+
+        back_image = findViewById(R.id.back_image);
     }
 
     private void initData(){
@@ -357,6 +377,9 @@ public class OrderDetailActivity extends AppCompatActivity {
                 super.onLocationResult(locationResult);
 
                 mCurrentLocation = locationResult.getLastLocation();
+
+                Common.CURRENT_LOCATION = mCurrentLocation;
+                getDistanceAndCalculateShipCost(order.getAddress());
 
                 double lat1 = mCurrentLocation.getLatitude();
                 double lng1 = mCurrentLocation.getLongitude();
