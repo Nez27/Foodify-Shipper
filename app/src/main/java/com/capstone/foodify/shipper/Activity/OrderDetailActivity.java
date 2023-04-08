@@ -20,6 +20,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.Log;
@@ -104,8 +105,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingsRequest;
     private LocationCallback mLocationCallBack;
-    private Location mCurrentLocation;
-    private boolean mRequestingLocationUpdates = false;
+    private Location mCurrentLocation = null;
     private ImageView back_image;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +141,8 @@ public class OrderDetailActivity extends AppCompatActivity {
         back_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Common.CURRENT_LOCATION = null;
+                stopLocationService();
                 startActivity(new Intent(OrderDetailActivity.this, MainActivity.class));
                 finish();
             }
@@ -175,15 +177,14 @@ public class OrderDetailActivity extends AppCompatActivity {
         btn_confirm_ship_completed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeOrderStatus(COMPLETE_STATUS);
-                stopLocationService();
+                updateStatus(COMPLETE_STATUS);
             }
         });
 
         btn_cancel_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeOrderStatus(CANCEL_STATUS);
+                updateStatus(CANCEL_STATUS);
             }
         });
 
@@ -191,8 +192,34 @@ public class OrderDetailActivity extends AppCompatActivity {
         geofencingClient = LocationServices.getGeofencingClient(this);
         geofenceHelper = new GeofenceHelper(this);
 
+        if(!order.getStatus().equals(COMPLETE_STATUS) && !order.getStatus().equals(CANCEL_STATUS)){
+            getLocation();
 
-        getLocation();
+            final Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(mCurrentLocation != null){
+                        stopLocationUpdates();
+                        Common.CURRENT_LOCATION = mCurrentLocation;
+                        getDistanceAndCalculateShipCost(order.getAddress());
+                        changeLayoutButton(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                    } else {
+                        Toast.makeText(OrderDetailActivity.this, "Chưa thể lấy được vị trí!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }, 5000);
+        } else {
+            btn_shipping.setVisibility(View.GONE);
+            layoutConfirmOrder.setVisibility(View.GONE);
+            progressLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateStatus(String status) {
+        Common.CURRENT_LOCATION = null;
+        changeOrderStatus(status);
+        stopLocationService();
     }
 
     private void changeOrderStatus(String status){
@@ -414,15 +441,7 @@ public class OrderDetailActivity extends AppCompatActivity {
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 super.onLocationResult(locationResult);
 
-                stopLocationUpdates();
                 mCurrentLocation = locationResult.getLastLocation();
-
-                Common.CURRENT_LOCATION = mCurrentLocation;
-                getDistanceAndCalculateShipCost(order.getAddress());
-
-                changeLayoutButton(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-
-                progressLayout.setVisibility(View.GONE);
             }
         };
 

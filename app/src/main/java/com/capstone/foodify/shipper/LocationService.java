@@ -25,11 +25,14 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+import com.capstone.foodify.shipper.Model.GoogleMap.Location;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LocationService extends Service {
     private static final String TAG = "LocationService";
@@ -43,9 +46,11 @@ public class LocationService extends Service {
                 double lat = locationResult.getLastLocation().getLatitude();
                 double lng = locationResult.getLastLocation().getLongitude();
 
-                Log.d(TAG, lat + ", " + lng);
+                Log.d(TAG, "Location: " + lat + ", " + lng);
 
                 Common.CURRENT_LOCATION = locationResult.getLastLocation();
+
+                updateLocationShipper(lat, lng);
             }
         }
     };
@@ -114,5 +119,17 @@ public class LocationService extends Service {
             }
         }
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void updateLocationShipper(double lat, double lng){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference order = database.getReference("Order");
+
+        if(Common.CURRENT_ORDER != null){
+            Location location = new Location();
+            location.setLat(lat);
+            location.setLng(lng);
+            order.child(Common.CURRENT_ORDER.getOrderTrackingNumber()).setValue(location);
+        }
     }
 }
