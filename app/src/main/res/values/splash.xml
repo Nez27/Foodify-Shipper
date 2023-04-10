@@ -2,7 +2,7 @@
 <resources>
     <style name="Theme.FoodifyShipper.SplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#FFFFFF</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/icon_shipper_with_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
         <item name="postSplashScreenTheme">@style/Theme.FoodifyShipper</item>
     </style>
 </resources>

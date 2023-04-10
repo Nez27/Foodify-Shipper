@@ -1,5 +1,6 @@
 package com.capstone.foodify.shipper.API;
 
+import com.capstone.foodify.shipper.Common;
 import com.capstone.foodify.shipper.Model.Shipper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,7 +16,7 @@ public interface FoodApi {
     Gson gson = new GsonBuilder().setDateFormat("HH:mm:ss dd-MM-yyyy").setLenient().create();
 
     FoodApi apiService = new Retrofit.Builder()
-            .baseUrl("http://192.168.1.183:8080/api/").addConverterFactory(GsonConverterFactory.create(gson))
+            .baseUrl(Common.BASE_URL).addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(FoodApi.class);
 

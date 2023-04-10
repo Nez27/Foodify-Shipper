@@ -2,27 +2,20 @@ package com.capstone.foodify.shipper.Activity;
 
 import static com.capstone.foodify.shipper.Common.ACTION_START_LOCATION_SERVICE;
 import static com.capstone.foodify.shipper.Common.ACTION_STOP_LOCATION_SERVICE;
-import static com.capstone.foodify.shipper.Common.FASTEST_UPDATE_IN_MILLISECONDS;
-import static com.capstone.foodify.shipper.Common.LOCATION_REQUEST_CODE;
 import static com.capstone.foodify.shipper.Common.MAX_WAIT_TIME_IN_MILLISECONDS;
 import static com.capstone.foodify.shipper.Common.REQUEST_CHECK_SETTINGS;
-import static com.capstone.foodify.shipper.Common.UPDATE_INTERVAL_IN_MILLISECONDS;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,18 +25,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.capstone.foodify.shipper.API.FoodApiToken;
 import com.capstone.foodify.shipper.API.GoogleMapApi;
+import com.capstone.foodify.shipper.API.TokenFCMFirebaseAPI;
 import com.capstone.foodify.shipper.Adapter.OrderDetailAdapter;
-import com.capstone.foodify.shipper.BuildConfig;
 import com.capstone.foodify.shipper.Common;
 import com.capstone.foodify.shipper.GoogleMap.GeofenceHelper;
 import com.capstone.foodify.shipper.LocationService;
@@ -75,8 +65,6 @@ import com.thecode.aestheticdialogs.DialogType;
 import com.thecode.aestheticdialogs.OnDialogClickListener;
 
 import java.text.DecimalFormat;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -97,7 +85,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     LinearLayout layoutConfirmOrder;
     private GeofencingClient geofencingClient;
     private GeofenceHelper geofenceHelper;
-    private float GEOFENCE_RADIUS = 150;
+    private float GEOFENCE_RADIUS = 200;
     private String GEOFENCE_ID = "SOME_GEOFENCE_ID";
     //Location
     private FusedLocationProviderClient mFusedLocationClient;
@@ -117,7 +105,7 @@ public class OrderDetailActivity extends AppCompatActivity {
             order = (Order) getIntent().getSerializableExtra("order");
         }
 
-
+        //Set data order when shipper return back the app from Google Map
         if (order == null && Common.CURRENT_ORDER != null) {
             order = Common.CURRENT_ORDER;
         }
@@ -130,6 +118,8 @@ public class OrderDetailActivity extends AppCompatActivity {
 
         initComponent();
         initData();
+
+        getFCMTokenUser();
 
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
@@ -162,6 +152,8 @@ public class OrderDetailActivity extends AppCompatActivity {
                             Uri.parse("google.navigation:q=" + order.getLat() + "," + order.getLng() + "&mode=l"));
                     intent.setPackage("com.google.android.apps.maps");
                     startActivity(intent);
+                } else{
+                    Common.showErrorDialog(OrderDetailActivity.this, "Không thể lấy được thông tin đơn, vui lòng thử lại sau!");
                 }
             }
         });
@@ -216,6 +208,25 @@ public class OrderDetailActivity extends AppCompatActivity {
         }
     }
 
+    private void getFCMTokenUser(){
+        TokenFCMFirebaseAPI.apiService.getTokenFCM(order.getUser().getId()).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.code() == 200){
+                    String tempToken = response.body();
+                    assert tempToken != null;
+                    Common.FCM_TOKEN_USER = tempToken.replace("\"", "");
+                } else {
+                    Toast.makeText(OrderDetailActivity.this, "Error code: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(OrderDetailActivity.this, Common.ERROR_CONNECT_SERVER, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     private void updateStatus(String status) {
         Common.CURRENT_LOCATION = null;
         changeOrderStatus(status);
@@ -513,5 +524,13 @@ public class OrderDetailActivity extends AppCompatActivity {
         if(Common.CURRENT_LOCATION != null){
             changeLayoutButton(Common.CURRENT_LOCATION.getLatitude(), Common.CURRENT_LOCATION.getLongitude());
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopLocationService();
+        Common.CURRENT_ORDER = null;
+        Common.FCM_TOKEN_USER = null;
     }
 }

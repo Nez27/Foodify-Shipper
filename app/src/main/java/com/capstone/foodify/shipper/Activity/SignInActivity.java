@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -207,7 +206,7 @@ public class SignInActivity extends AppCompatActivity {
                                 @Override
                                 public void onFailure(Call<User> call, Throwable t) {
                                     System.out.println("ERROR: " + t);
-                                    Common.showErrorServerNotification(SignInActivity.this, "Không thể đăng nhập tài khoản! Vui lòng thử lại sau!");
+                                    Common.showErrorDialog(SignInActivity.this, "Không thể đăng nhập tài khoản! Vui lòng thử lại sau!");
                                 }
                             });
                         } else {

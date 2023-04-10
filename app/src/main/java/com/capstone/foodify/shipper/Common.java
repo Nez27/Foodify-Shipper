@@ -25,7 +25,10 @@ public class Common {
     public static Shipper CURRENT_SHIPPER = null;
     public static Order CURRENT_ORDER = null;
     public static String TOKEN = null;
+    public static String FCM_TOKEN_SHIPPER = null;
+    public static String FCM_TOKEN_USER = null;
     public static Location CURRENT_LOCATION = null;
+    public static final String BASE_URL = "http://192.168.1.183:8080/api/";
     public static final String MAP_API = "AIzaSyAY14Ic32UP26Hg6GILznOfbBihiY5BUxw";
     public static final String FORMAT_DATE="dd-MM-yyyy";
     public static final String VALID_EMAIL_ADDRESS_REGEX = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
@@ -51,7 +54,7 @@ public class Common {
         return Typeface.createFromAsset(assetManager, "font/opensans.ttf");
     }
 
-    public static void showErrorServerNotification(Activity activity, String message){
+    public static void showErrorDialog(Activity activity, String message){
         new AestheticDialog.Builder(activity, DialogStyle.RAINBOW, DialogType.ERROR)
                 .setTitle("LỖI!")
                 .setMessage(message)

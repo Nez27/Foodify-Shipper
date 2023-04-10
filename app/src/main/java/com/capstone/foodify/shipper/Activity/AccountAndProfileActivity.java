@@ -14,15 +14,12 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.capstone.foodify.shipper.API.FoodApiToken;
@@ -42,10 +39,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
-import com.thecode.aestheticdialogs.AestheticDialog;
-import com.thecode.aestheticdialogs.DialogAnimation;
-import com.thecode.aestheticdialogs.DialogStyle;
-import com.thecode.aestheticdialogs.DialogType;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -225,7 +218,7 @@ public class AccountAndProfileActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Common.showErrorServerNotification(AccountAndProfileActivity.this, "Không thể cập nhật thông tin, vui lòng thử lại sau!");
+                Common.showErrorDialog(AccountAndProfileActivity.this, "Không thể cập nhật thông tin, vui lòng thử lại sau!");
                 progressLayout.setVisibility(View.GONE);
             }
         });

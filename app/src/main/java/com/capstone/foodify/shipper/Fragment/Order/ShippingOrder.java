@@ -86,6 +86,7 @@ public class ShippingOrder extends Fragment {
                 public void onResponse(Call<Orders> call, Response<Orders> response) {
                     if(response.code() == 200){
 
+                        assert response.body() != null;
                         listOrders.addAll(response.body().getOrders());
 
                         orderAdapter.setData(listOrders);

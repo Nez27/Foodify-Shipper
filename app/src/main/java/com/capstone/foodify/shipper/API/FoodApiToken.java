@@ -39,7 +39,7 @@ public interface FoodApiToken {
 
     FoodApiToken apiService = new Retrofit.Builder()
             .client(client)
-            .baseUrl("http://192.168.1.183:8080/api/").addConverterFactory(GsonConverterFactory.create(gson))
+            .baseUrl(Common.BASE_URL).addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(FoodApiToken.class);
 
@@ -56,4 +56,6 @@ public interface FoodApiToken {
     @PUT("users/{userId}/orders/{orderId}/status")
     Call<CustomResponse> changeStatusOrder(@Path("userId") int userId, @Path("orderId") int orderId, @Query("status") String status);
 
+    @PUT("users/{userId}/update/fcm")
+    Call<CustomResponse> updateFCMToken(@Path("userId") int userId, @Body String token);
 }

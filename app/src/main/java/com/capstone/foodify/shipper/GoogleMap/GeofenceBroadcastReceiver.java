@@ -1,28 +1,27 @@
 package com.capstone.foodify.shipper.GoogleMap;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.capstone.foodify.shipper.API.FirebaseMessagingAPI;
 import com.capstone.foodify.shipper.Activity.OrderDetailActivity;
 import com.capstone.foodify.shipper.Common;
-import com.capstone.foodify.shipper.Model.Order;
+import com.capstone.foodify.shipper.Model.FirebaseMessaging.FirebaseMessaging;
+import com.capstone.foodify.shipper.Model.FirebaseMessaging.Notification;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
-import com.google.android.gms.location.LocationResult;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
     private static final String TAG = "GeofenceBroadcastReceive";
-    public static final String ACTION_PROCESS_UPDATE = "com.capstone.foodify.shipper.GoogleMap.UPDATE_LOCATION";
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -43,9 +42,31 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
         if(transitionType == Geofence.GEOFENCE_TRANSITION_ENTER){
             notificationHelper.sendHighPriorityNotification("Đã tới khu vực giao!", "Nhấp vào đây để quay về app!", OrderDetailActivity.class);
+
+            if(Common.FCM_TOKEN_USER != null)
+                sendNotification();
         }
 
+    }
 
+    private void sendNotification(){
 
+        Notification notification = new Notification("Thông báo!", "Đơn hàng đang gần đến bạn!");
+        FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
+        firebaseMessaging.setTo(Common.FCM_TOKEN_USER);
+        firebaseMessaging.setNotification(notification);
+        FirebaseMessagingAPI.apiService.sendNotification(firebaseMessaging).enqueue(new Callback<FirebaseMessaging>() {
+            @Override
+            public void onResponse(Call<FirebaseMessaging> call, Response<FirebaseMessaging> response) {
+                if(response.code() != 200){
+                    Log.d(TAG, "Error to send notification. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FirebaseMessaging> call, Throwable t) {
+                Log.e(TAG, "Error to connect FCM Messaging!");
+            }
+        });
     }
 }
