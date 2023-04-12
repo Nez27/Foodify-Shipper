@@ -43,7 +43,7 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
         if(transitionType == Geofence.GEOFENCE_TRANSITION_ENTER){
             notificationHelper.sendHighPriorityNotification("Đã tới khu vực giao!", "Nhấp vào đây để quay về app!", OrderDetailActivity.class);
 
-            if(Common.FCM_TOKEN_USER != null)
+            if(Common.FCM_TOKEN_CUSTOMER != null)
                 sendNotification();
         }
 
@@ -53,7 +53,9 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
         Notification notification = new Notification("Thông báo!", "Đơn hàng đang gần đến bạn!");
         FirebaseMessaging firebaseMessaging = new FirebaseMessaging();
-        firebaseMessaging.setTo(Common.FCM_TOKEN_USER);
+
+
+        firebaseMessaging.setTo(Common.FCM_TOKEN_CUSTOMER);
         firebaseMessaging.setNotification(notification);
         FirebaseMessagingAPI.apiService.sendNotification(firebaseMessaging).enqueue(new Callback<FirebaseMessaging>() {
             @Override

@@ -82,7 +82,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     ConstraintLayout progressLayout;
     RecyclerView rcv_list_order;
     OrderDetailAdapter adapter;
-    LinearLayout layoutConfirmOrder;
+    LinearLayout layout1;
     private GeofencingClient geofencingClient;
     private GeofenceHelper geofenceHelper;
     private float GEOFENCE_RADIUS = 200;
@@ -155,6 +155,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                 } else{
                     Common.showErrorDialog(OrderDetailActivity.this, "Không thể lấy được thông tin đơn, vui lòng thử lại sau!");
                 }
+
             }
         });
 
@@ -184,7 +185,7 @@ public class OrderDetailActivity extends AppCompatActivity {
         geofencingClient = LocationServices.getGeofencingClient(this);
         geofenceHelper = new GeofenceHelper(this);
 
-        if(!order.getStatus().equals(COMPLETE_STATUS) && !order.getStatus().equals(CANCEL_STATUS)){
+        if(!order.getStatus().equals(COMPLETE_STATUS)){
             getLocation();
 
             final Handler handler = new Handler(Looper.getMainLooper());
@@ -202,8 +203,8 @@ public class OrderDetailActivity extends AppCompatActivity {
                 }
             }, 5000);
         } else {
-            btn_shipping.setVisibility(View.GONE);
-            layoutConfirmOrder.setVisibility(View.GONE);
+            btn_call.setVisibility(View.GONE);
+            layout1.setVisibility(View.GONE);
             progressLayout.setVisibility(View.GONE);
         }
     }
@@ -215,7 +216,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                 if(response.code() == 200){
                     String tempToken = response.body();
                     assert tempToken != null;
-                    Common.FCM_TOKEN_USER = tempToken.replace("\"", "");
+                    Common.FCM_TOKEN_CUSTOMER = tempToken.replace("\"", "");
                 } else {
                     Toast.makeText(OrderDetailActivity.this, "Error code: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
@@ -278,7 +279,7 @@ public class OrderDetailActivity extends AppCompatActivity {
 
         rcv_list_order = findViewById(R.id.list_order);
 
-        layoutConfirmOrder = findViewById(R.id.layout1);
+        layout1 = findViewById(R.id.layout1);
 
         progressLayout = findViewById(R.id.progress_layout);
 
@@ -471,11 +472,11 @@ public class OrderDetailActivity extends AppCompatActivity {
 
     private void changeLayoutButton(double lat1, double lng1) {
         if(distance(lat1, lng1, order.getLat(), order.getLng()) < 0.2){
-            btn_shipping.setVisibility(View.GONE);
-            layoutConfirmOrder.setVisibility(View.VISIBLE);
+            layout1.setVisibility(View.GONE);
+            btn_confirm_ship_completed.setVisibility(View.VISIBLE);
         } else {
-            btn_shipping.setVisibility(View.VISIBLE);
-            layoutConfirmOrder.setVisibility(View.GONE);
+            layout1.setVisibility(View.VISIBLE);
+            btn_confirm_ship_completed.setVisibility(View.GONE);
         }
     }
 
@@ -531,6 +532,6 @@ public class OrderDetailActivity extends AppCompatActivity {
         super.onDestroy();
         stopLocationService();
         Common.CURRENT_ORDER = null;
-        Common.FCM_TOKEN_USER = null;
+        Common.FCM_TOKEN_CUSTOMER = null;
     }
 }

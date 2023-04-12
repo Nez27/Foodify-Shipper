@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -91,6 +93,16 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         });
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if(task.isSuccessful()){
+                            Log.d("TOKEN_FCM", "Token: " + task.getResult());
+                        }
+                    }
+                });
 
 
         edt_password.addTextChangedListener(new TextWatcher() {
@@ -182,9 +194,6 @@ public class SignInActivity extends AppCompatActivity {
 
                                                     //Get shipper id
                                                     getShipperId(userData.getId());
-
-                                                    startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                                                    finish();
                                                 } else {
                                                     Toast.makeText(SignInActivity.this, "Tài khoản không hợp lệ! Vui lòng kiểm tra lại!", Toast.LENGTH_SHORT).show();
                                                     FirebaseAuth.getInstance().signOut();
@@ -277,7 +286,10 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Shipper> call, Response<Shipper> response) {
                 if(response.code() == 200){
-                        Common.CURRENT_SHIPPER = response.body();
+                    Common.CURRENT_SHIPPER = response.body();
+
+                    startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                    finish();
                     //Dismiss progress bar
                     progressLayout.setVisibility(View.GONE);
                 }

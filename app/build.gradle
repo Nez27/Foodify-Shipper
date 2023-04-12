@@ -8,6 +8,12 @@ android {
     namespace 'com.capstone.foodify.shipper'
     compileSdk 31
 
+    lintOptions {
+        checkReleaseBuilds false
+        tasks.lint.enabled = false
+        baseline file("lint-baseline.xml")
+    }
+
     defaultConfig {
         applicationId "com.capstone.foodify.shipper"
         minSdk 26

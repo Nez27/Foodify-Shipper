@@ -30,7 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CompletedOrder extends Fragment {
+public class ShippingFragment extends Fragment {
     private static int CURRENT_PAGE = 0;
     private static final int PAGE_SIZE = 8;
     private static final String SORT_BY = "id";
@@ -101,7 +101,7 @@ public class CompletedOrder extends Fragment {
 
     private void getListOrder(){
         if(Common.CURRENT_SHIPPER != null){
-            FoodApiToken.apiService.getListOrder(Common.CURRENT_SHIPPER.getId(), "COMPLETED", CURRENT_PAGE++, PAGE_SIZE, SORT_BY, SORT_DIR).enqueue(new Callback<Orders>() {
+            FoodApiToken.apiService.getListOrder(Common.CURRENT_SHIPPER.getId(), "SHIPPING", CURRENT_PAGE++, PAGE_SIZE, SORT_BY, SORT_DIR).enqueue(new Callback<Orders>() {
                 @Override
                 public void onResponse(Call<Orders> call, Response<Orders> response) {
                     if(response.code() == 200){
