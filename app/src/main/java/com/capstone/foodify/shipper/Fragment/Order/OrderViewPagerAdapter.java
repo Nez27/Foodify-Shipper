@@ -15,9 +15,9 @@ public class OrderViewPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         switch(position) {
-            case 1: return new ShippingFragment();
-            case 2: return new CompletedOrder();
-            default: return new AwaitingOrder();
+            case 1: return new CompletedOrder();
+            case 2: return new CancelOrder();
+            default: return new ConfirmedOrder();
         }
     }
     @Override

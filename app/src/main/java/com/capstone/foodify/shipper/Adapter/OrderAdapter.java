@@ -68,6 +68,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                         Intent intent = new Intent(activity, OrderDetailActivity.class);
                         intent.putExtra("order", order);
                         activity.startActivity(intent);
+                        activity.finish();
                     } else {
                         new AestheticDialog.Builder(activity, DialogStyle.TOASTER, DialogType.WARNING)
                                 .setTitle("THÔNG BÁO!")

@@ -7,6 +7,7 @@ import static com.capstone.foodify.shipper.Common.REQUEST_CHECK_SETTINGS;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +36,7 @@ import com.capstone.foodify.shipper.API.GoogleMapApi;
 import com.capstone.foodify.shipper.API.TokenFCMFirebaseAPI;
 import com.capstone.foodify.shipper.Adapter.OrderDetailAdapter;
 import com.capstone.foodify.shipper.Common;
+import com.capstone.foodify.shipper.Fragment.OrderFragment;
 import com.capstone.foodify.shipper.GoogleMap.GeofenceHelper;
 import com.capstone.foodify.shipper.LocationService;
 import com.capstone.foodify.shipper.Model.CustomResponse;
@@ -135,23 +137,43 @@ public class OrderDetailActivity extends AppCompatActivity {
                 stopLocationService();
                 startActivity(new Intent(OrderDetailActivity.this, MainActivity.class));
                 finish();
+                overridePendingTransition(0,0);
             }
         });
         btn_shipping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (Common.CURRENT_ORDER == null) {
-                    LatLng latLng = new LatLng(order.getLat(), order.getLng());
-                    addGeofence(latLng, GEOFENCE_RADIUS);
 
-                    Common.CURRENT_ORDER = order;
+                    //Change order status
+                    FoodApiToken.apiService.changeStatusOrder(order.getUser().getId(), order.getId(), "SHIPPING").enqueue(new Callback<CustomResponse>() {
+                        @Override
+                        public void onResponse(Call<CustomResponse> call, Response<CustomResponse> response) {
+                            if(response.code() == 200){
+                                //If success
 
-                    startLocationService();
+                                LatLng latLng = new LatLng(order.getLat(), order.getLng());
+                                addGeofence(latLng, GEOFENCE_RADIUS);
 
-                    Intent intent = new Intent(Intent.ACTION_VIEW,
-                            Uri.parse("google.navigation:q=" + order.getLat() + "," + order.getLng() + "&mode=l"));
-                    intent.setPackage("com.google.android.apps.maps");
-                    startActivity(intent);
+                                Common.CURRENT_ORDER = order;
+
+                                startLocationService();
+
+                                Intent intent = new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse("google.navigation:q=" + order.getLat() + "," + order.getLng() + "&mode=l"));
+                                intent.setPackage("com.google.android.apps.maps");
+                                startActivity(intent);
+                            } else {
+                                //If error
+                                Toast.makeText(OrderDetailActivity.this, "", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CustomResponse> call, Throwable t) {
+                            Toast.makeText(OrderDetailActivity.this, Common.ERROR_CONNECT_SERVER, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } else{
                     Common.showErrorDialog(OrderDetailActivity.this, "Không thể lấy được thông tin đơn, vui lòng thử lại sau!");
                 }
@@ -249,6 +271,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                                     startActivity(new Intent(OrderDetailActivity.this, MainActivity.class));
                                     builder.dismiss();
                                     finish();
+                                    overridePendingTransition(0,0);
                                 }
                             }).show();
                 }

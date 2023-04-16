@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,12 +44,15 @@ import retrofit2.Response;
 public class SignInActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    TextInputLayout textInput_email, textInput_password;
-    TextInputEditText edt_email, edt_password;
-    ConstraintLayout progressLayout;
-    String email, password = null;
-    MaterialButton btn_sign_in;
+    private TextInputLayout textInput_email, textInput_password;
+    private TextInputEditText edt_email, edt_password;
+    private ConstraintLayout progressLayout;
+    private String email, password = null;
+    private MaterialButton btn_sign_in;
     private FirebaseUser user;
+
+    private TextView txt_forgot_password;
+
 
     @Override
     public void onStart() {
@@ -105,6 +109,12 @@ public class SignInActivity extends AppCompatActivity {
                 });
 
 
+        txt_forgot_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SignInActivity.this, ForgotPasswordActivity.class));
+            }
+        });
         edt_password.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -234,6 +244,7 @@ public class SignInActivity extends AppCompatActivity {
         btn_sign_in = findViewById(R.id.sign_in_button);
         textInput_email = findViewById(R.id.textInput_email);
         textInput_password = findViewById(R.id.textInput_password);
+        txt_forgot_password = findViewById(R.id.txt_forgot_password);
 
         edt_email = findViewById(R.id.edt_email);
         edt_password = findViewById(R.id.edt_password);

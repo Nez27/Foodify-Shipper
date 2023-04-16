@@ -24,14 +24,13 @@ import com.capstone.foodify.shipper.Model.Response.Orders;
 import com.capstone.foodify.shipper.R;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AwaitingOrder extends Fragment {
+public class CancelOrder extends Fragment {
     private static int CURRENT_PAGE = 0;
     private static final int PAGE_SIZE = 8;
     private static final String SORT_BY = "id";
@@ -48,7 +47,7 @@ public class AwaitingOrder extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_waiting_order, container, false);
+        View view = inflater.inflate(R.layout.fragment_cancel, container, false);
 
         //Init component
         recyclerView = view.findViewById(R.id.rcv_list_order);
@@ -102,7 +101,7 @@ public class AwaitingOrder extends Fragment {
 
     private void getListOrder(){
         if(Common.CURRENT_SHIPPER != null){
-            FoodApiToken.apiService.getListOrder(Common.CURRENT_SHIPPER.getId(), "AWAITING", CURRENT_PAGE++, PAGE_SIZE, SORT_BY, SORT_DIR).enqueue(new Callback<Orders>() {
+            FoodApiToken.apiService.getListOrder(Common.CURRENT_SHIPPER.getId(), "SHIPPING", CURRENT_PAGE++, PAGE_SIZE, SORT_BY, SORT_DIR).enqueue(new Callback<Orders>() {
                 @Override
                 public void onResponse(Call<Orders> call, Response<Orders> response) {
                     if(response.code() == 200){

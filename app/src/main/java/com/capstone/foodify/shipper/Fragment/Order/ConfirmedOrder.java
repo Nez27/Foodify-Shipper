@@ -30,7 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ShippingFragment extends Fragment {
+public class ConfirmedOrder extends Fragment {
     private static int CURRENT_PAGE = 0;
     private static final int PAGE_SIZE = 8;
     private static final String SORT_BY = "id";
@@ -47,7 +47,7 @@ public class ShippingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_waiting_order, container, false);
+        View view = inflater.inflate(R.layout.fragment_confirmed_order, container, false);
 
         //Init component
         recyclerView = view.findViewById(R.id.rcv_list_order);
@@ -80,7 +80,7 @@ public class ShippingFragment extends Fragment {
             });
         }
 
-
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.primaryColor, null));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -101,7 +101,7 @@ public class ShippingFragment extends Fragment {
 
     private void getListOrder(){
         if(Common.CURRENT_SHIPPER != null){
-            FoodApiToken.apiService.getListOrder(Common.CURRENT_SHIPPER.getId(), "SHIPPING", CURRENT_PAGE++, PAGE_SIZE, SORT_BY, SORT_DIR).enqueue(new Callback<Orders>() {
+            FoodApiToken.apiService.getListOrder(Common.CURRENT_SHIPPER.getId(), "CONFIRMED", CURRENT_PAGE++, PAGE_SIZE, SORT_BY, SORT_DIR).enqueue(new Callback<Orders>() {
                 @Override
                 public void onResponse(Call<Orders> call, Response<Orders> response) {
                     if(response.code() == 200){
@@ -140,10 +140,6 @@ public class ShippingFragment extends Fragment {
     private void hideProgressBarAndShowEndOfListText(){
         progressBar.setVisibility(View.GONE);
         end_of_list_text_view.setVisibility(View.VISIBLE);
-    }
-
-    private void defaultLayout(){
-
     }
 
     private void dataLoadMore() {

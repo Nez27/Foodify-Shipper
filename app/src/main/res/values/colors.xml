@@ -5,6 +5,7 @@
 
     <color name="primaryColor">#53BBFF</color>
     <color name="primaryDarkColor">#CF2E33</color>
+    <color name="primaryLightColor">#78CAFF</color>
     <color name="gray">#A3A3A3</color>
     <color name="secondary">#F99928</color>
     <color name="grayLight">#ACA5A5</color>

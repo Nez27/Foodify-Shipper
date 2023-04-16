@@ -61,7 +61,6 @@ public class AccountAndProfileActivity extends AppCompatActivity {
     final private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     ConstraintLayout progressLayout;
     FirebaseAuth mAuth;
-    FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -2,6 +2,8 @@ package com.capstone.foodify.shipper.Activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,20 +28,31 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.capstone.foodify.shipper.API.FoodApiToken;
 import com.capstone.foodify.shipper.BuildConfig;
 import com.capstone.foodify.shipper.Common;
+import com.capstone.foodify.shipper.Fragment.OrderFragment;
 import com.capstone.foodify.shipper.Model.CustomResponse;
 import com.capstone.foodify.shipper.R;
+import com.capstone.foodify.shipper.RefreshTokenService;
 import com.capstone.foodify.shipper.ViewPagerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.appdistribution.AppDistributionRelease;
+import com.google.firebase.appdistribution.FirebaseAppDistribution;
+import com.google.firebase.appdistribution.InterruptionLevel;
+import com.google.firebase.appdistribution.OnProgressListener;
+import com.google.firebase.appdistribution.UpdateProgress;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.techiness.progressdialoglibrary.ProgressDialog;
 
+import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,9 +63,11 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final int JOB_ID = 123;
     ViewPager2 viewPager2;
     ViewPagerAdapter viewPagerAdapter;
     BottomNavigationView bottomNavigationView;
+
 
     //Location
     private static final int LOCATION_REQUEST_CODE = 100;
@@ -61,8 +76,57 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(Common.firebaseAppDistribution.isTesterSignedIn()){
 
-        //Init Component
+            //Customise progress dialog
+            ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTheme(ProgressDialog.THEME_LIGHT);
+            progressDialog.setMode(ProgressDialog.MODE_DETERMINATE);
+            progressDialog.setProgress(0);
+            progressDialog.setMessage("Xin vui lòng chờ...");
+            progressDialog.showProgressTextAsFraction(true);
+            progressDialog.setProgressTintList(getColorStateList(R.color.primaryColor));
+            progressDialog.setSecondaryProgressTintList(getColorStateList(R.color.primaryLightColor));
+
+            Common.firebaseAppDistribution.checkForNewRelease().addOnCompleteListener(new OnCompleteListener<AppDistributionRelease>() {
+                @Override
+                public void onComplete(@NonNull Task<AppDistributionRelease> task) {
+                    if(task.isSuccessful()){
+                        AppDistributionRelease appDistributionRelease = task.getResult();
+
+                        if(appDistributionRelease != null){
+                            progressDialog.show();
+                        }
+                    }
+                }
+            });
+
+            Common.firebaseAppDistribution.updateIfNewReleaseAvailable().addOnProgressListener(new OnProgressListener() {
+                @Override
+                public void onProgressUpdate(@NonNull UpdateProgress updateProgress) {
+                    double totalBytes = updateProgress.getApkFileTotalBytes();
+
+                    double number = (updateProgress.getApkBytesDownloaded() / totalBytes) * 100;
+
+                    progressDialog.setProgress((int) number);
+                    progressDialog.setSecondaryProgress((int) number + 10);
+
+                    if(number == 100){
+                        progressDialog.dismiss();
+                    }
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(!task.isSuccessful()){
+                        progressDialog.dismiss();
+                    }
+                }
+            });
+        }
+
+
+//        Init Component
         bottomNavigationView = findViewById(R.id.bottom_nav);
         viewPager2 = findViewById(R.id.viewPager);
 
@@ -72,7 +136,25 @@ public class MainActivity extends AppCompatActivity {
         checkNotificationPermission();
         startPowerSaverIntent(this);
         getTokenFCM();
+        startRefreshTokenService();
     }
+
+    private void startRefreshTokenService() {
+        ComponentName componentName = new ComponentName(this, RefreshTokenService.class);
+
+        JobInfo jobInfo = new JobInfo.Builder(JOB_ID, componentName)
+                .setPeriodic(59 * 60 * 1000)
+                .build();
+
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(jobInfo);
+    }
+
+    private void stopRefreshTokenService() {
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancel(JOB_ID);
+    }
+
     private void bottomNavigation() {
         viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager2.setAdapter(viewPagerAdapter);
@@ -288,5 +370,17 @@ public class MainActivity extends AppCompatActivity {
         return list.size() > 0;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        Log.e("Tag", "Resume");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        stopRefreshTokenService();
+    }
 }

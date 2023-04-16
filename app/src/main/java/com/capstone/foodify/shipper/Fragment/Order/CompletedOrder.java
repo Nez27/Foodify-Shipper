@@ -47,7 +47,7 @@ public class CompletedOrder extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_waiting_order, container, false);
+        View view = inflater.inflate(R.layout.fragment_confirmed_order, container, false);
 
         //Init component
         recyclerView = view.findViewById(R.id.rcv_list_order);
@@ -80,7 +80,7 @@ public class CompletedOrder extends Fragment {
             });
         }
 
-
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.primaryColor, null));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
