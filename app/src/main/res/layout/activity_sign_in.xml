@@ -36,8 +36,8 @@
 
             <TextView
                 android:text="Foodify"
-                android:fontFamily="@font/bebas"
-                android:textSize="50sp"
+                android:fontFamily="@font/koho_bold"
+                android:textSize="40sp"
                 android:textColor="#ff8084"
                 android:layout_marginEnd="15dp"
                 android:layout_width="wrap_content"
@@ -46,9 +46,9 @@
 
             <TextView
                 android:text="Shipper"
-                android:fontFamily="@font/bebas"
+                android:fontFamily="@font/koho_bold"
                 android:textColor="@color/primaryColor"
-                android:textSize="50sp"
+                android:textSize="40sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -58,7 +58,7 @@
         <TextView
             android:id="@+id/txt_sign_in"
             android:text="Đăng nhập"
-            android:fontFamily="@font/bebas"
+            android:fontFamily="@font/koho_bold"
             android:textSize="35sp"
             android:textColor="@color/black"
             android:layout_marginTop="30dp"
@@ -120,8 +120,7 @@
 
         <TextView
             android:id="@+id/txt_forgot_password"
-            android:fontFamily="@font/opensans"
-            android:textStyle="bold"
+            android:fontFamily="@font/koho_bold"
             android:text="Quên mật khẩu?"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="20dp"
@@ -135,7 +134,7 @@
             android:id="@+id/sign_in_button"
             android:text="Đăng nhập"
             android:textSize="20sp"
-            android:fontFamily="@font/bebas"
+            android:fontFamily="@font/koho_bold"
             style="@style/DefaultSolid"
             android:backgroundTint="@color/primaryColor"
             android:layout_marginTop="80dp"

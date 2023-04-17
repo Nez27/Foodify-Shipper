@@ -190,7 +190,7 @@ public class OrderFragment extends Fragment {
     private void setNameUser(){
         String[] namePart = Common.CURRENT_USER.getFullName().split(" ");
 
-        welcome_text.setText("Xin chào, " + namePart[namePart.length - 1]);
+        welcome_text.setText("Xin chào, " + namePart[namePart.length - 1] + "!");
 
     }
 

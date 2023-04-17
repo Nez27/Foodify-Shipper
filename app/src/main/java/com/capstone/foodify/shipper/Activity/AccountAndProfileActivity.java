@@ -32,7 +32,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -244,12 +243,12 @@ public class AccountAndProfileActivity extends AppCompatActivity {
         progressLayout = findViewById(R.id.progress_layout);
     }
     private void setFontUI() {
-        textInput_email.setTypeface(Common.setFontBebas(getAssets()));
-        textInput_phone.setTypeface(Common.setFontBebas(getAssets()));
-        textInput_fullName.setTypeface(Common.setFontBebas(getAssets()));
-        textInput_birthDay.setTypeface(Common.setFontBebas(getAssets()));
+        textInput_email.setTypeface(Common.setFontKoho(getAssets()));
+        textInput_phone.setTypeface(Common.setFontKoho(getAssets()));
+        textInput_fullName.setTypeface(Common.setFontKoho(getAssets()));
+        textInput_birthDay.setTypeface(Common.setFontKoho(getAssets()));
 
-        edt_birthday.setTypeface(Common.setFontBebas(getAssets()));
+        edt_birthday.setTypeface(Common.setFontKoho(getAssets()));
     }
     private void chooseDateOfBirth() {
         //Get date, month, year from user

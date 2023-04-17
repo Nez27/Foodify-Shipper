@@ -18,8 +18,6 @@ import com.thecode.aestheticdialogs.DialogType;
 import com.thecode.aestheticdialogs.OnDialogClickListener;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class Common {
@@ -45,13 +43,10 @@ public class Common {
     public static final int LOCATION_SERVICE_ID = 175;
     public static final String ACTION_START_LOCATION_SERVICE = "startLocationService";
     public static final String ACTION_STOP_LOCATION_SERVICE = "stopLocationService";
-    public static Typeface setFontBebas(AssetManager assetManager){
-        return Typeface.createFromAsset(assetManager, "font/bebas.ttf");
+    public static Typeface setFontKoho(AssetManager assetManager){
+        return Typeface.createFromAsset(assetManager, "font/koho.ttf");
     }
 
-    public static Typeface setFontOpenSans(AssetManager assetManager){
-        return Typeface.createFromAsset(assetManager, "font/opensans.ttf");
-    }
 
     public static void showErrorDialog(Activity activity, String message){
         new AestheticDialog.Builder(activity, DialogStyle.RAINBOW, DialogType.ERROR)

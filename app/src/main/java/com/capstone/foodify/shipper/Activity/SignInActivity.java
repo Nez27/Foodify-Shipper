@@ -165,6 +165,7 @@ public class SignInActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
 
+                            assert user != null;
                             getInformationAndSignInUser(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -204,6 +205,7 @@ public class SignInActivity extends AppCompatActivity {
 
                                                     //Get shipper id
                                                     getShipperId(userData.getId());
+
                                                 } else {
                                                     Toast.makeText(SignInActivity.this, "Tài khoản không hợp lệ! Vui lòng kiểm tra lại!", Toast.LENGTH_SHORT).show();
                                                     FirebaseAuth.getInstance().signOut();
@@ -254,8 +256,8 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void setFontUI() {
-        textInput_email.setTypeface(Common.setFontBebas(getAssets()));
-        textInput_password.setTypeface(Common.setFontBebas(getAssets()));
+        textInput_email.setTypeface(Common.setFontKoho(getAssets()));
+        textInput_password.setTypeface(Common.setFontKoho(getAssets()));
     }
 
     private boolean validData(){

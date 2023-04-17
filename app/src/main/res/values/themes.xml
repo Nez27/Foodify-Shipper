@@ -31,7 +31,7 @@
     </style>
 
     <style name="tab_text" parent="@android:style/TextAppearance.Widget.TabWidget">
-        <item name="android:fontFamily">@font/bebas</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/koho</item>
+        <item name="android:textSize">16sp</item>
     </style>
 </resources>

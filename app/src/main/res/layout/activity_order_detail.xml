@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="35dp"
-                android:fontFamily="@font/bebas"
+                android:fontFamily="@font/koho_bold"
                 android:text="Chi tiết đơn"
                 android:textColor="@color/black"
                 android:textSize="30sp"
@@ -67,7 +67,7 @@
                 android:text="Thông tin người nhận"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
-                android:fontFamily="@font/bebas"
+                android:fontFamily="@font/koho_bold"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 android:layout_width="wrap_content"
@@ -91,9 +91,8 @@
                 >
                 <TextView
                     android:text="Tên:"
-                    android:fontFamily="@font/opensans"
+                    android:fontFamily="@font/koho"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
                     android:layout_marginEnd="5dp"
                     android:textSize="15sp"
                     android:layout_width="wrap_content"
@@ -102,8 +101,7 @@
 
                 <TextView
                     android:text="Nguyễn Văn A"
-                    android:fontFamily="@font/opensans"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/koho"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:layout_width="wrap_content"
@@ -127,9 +125,8 @@
                 >
                 <TextView
                     android:text="Số điện thoại: "
-                    android:fontFamily="@font/opensans"
+                    android:fontFamily="@font/koho"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
                     android:layout_marginEnd="5dp"
                     android:textSize="15sp"
                     android:layout_width="wrap_content"
@@ -138,8 +135,7 @@
 
                 <TextView
                     android:text="0987654321"
-                    android:fontFamily="@font/opensans"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/koho"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:layout_width="wrap_content"
@@ -160,8 +156,7 @@
                 <TextView
                     android:id="@+id/textView3"
                     android:text="Địa chỉ nhận hàng:"
-                    android:fontFamily="@font/opensans"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/koho"
                     android:layout_marginTop="5dp"
                     android:layout_marginStart="10dp"
                     android:textColor="@color/black"
@@ -175,8 +170,7 @@
                 <TextView
                     android:id="@+id/txt_address"
                     android:text="Hẻm 215, đường Phạm Như Xương, phường Hoà Khánh Nam, quận Liên Chiểu!"
-                    android:fontFamily="@font/opensans"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/koho"
                     android:layout_marginTop="5dp"
                     android:layout_marginStart="10dp"
                     android:textColor="@color/black"
@@ -202,8 +196,7 @@
                 <TextView
                     android:id="@+id/textView5"
                     android:text="Thời gian đặt:"
-                    android:fontFamily="@font/opensans"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/koho"
                     android:layout_marginTop="5dp"
                     android:layout_marginStart="10dp"
                     android:textColor="@color/black"
@@ -217,8 +210,7 @@
                 <TextView
                     android:id="@+id/txt_order_time"
                     android:text="2023-05-23"
-                    android:fontFamily="@font/opensans"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/koho"
                     android:layout_marginTop="5dp"
                     android:layout_marginStart="10dp"
                     android:textColor="@color/black"
@@ -244,8 +236,7 @@
                 <TextView
                     android:id="@+id/textView4"
                     android:text="Khoảng cách (tính từ vị trí của bạn):"
-                    android:fontFamily="@font/opensans"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/koho"
                     android:layout_marginTop="5dp"
                     android:layout_marginStart="10dp"
                     android:textColor="@color/black"
@@ -259,8 +250,7 @@
                 <TextView
                     android:id="@+id/txt_distance"
                     android:text="- km"
-                    android:fontFamily="@font/opensans"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/koho"
                     android:layout_marginTop="5dp"
                     android:layout_marginStart="10dp"
                     android:textColor="@color/black"
@@ -286,9 +276,8 @@
 
                 <TextView
                     android:text="Trạng thái đơn hàng: "
-                    android:fontFamily="@font/opensans"
+                    android:fontFamily="@font/koho"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -297,10 +286,9 @@
                 <TextView
                     android:text="-"
                     android:layout_marginStart="5dp"
-                    android:fontFamily="@font/opensans"
+                    android:fontFamily="@font/koho_bold"
                     android:textColor="@color/primaryColor"
                     android:textAllCaps="true"
-                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -325,11 +313,10 @@
                 >
                 <TextView
                     android:text="Tổng tiền cần thu: "
-                    android:fontFamily="@font/opensans"
+                    android:fontFamily="@font/koho_bold"
                     android:textColor="@color/primaryColor"
-                    android:textStyle="bold"
                     android:layout_marginEnd="5dp"
-                    android:textSize="23sp"
+                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     />
@@ -337,10 +324,9 @@
                 <TextView
                     android:id="@+id/txt_total"
                     android:text="500.000 VNĐ"
-                    android:fontFamily="@font/opensans"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/koho_bold"
                     android:textColor="@color/primaryColor"
-                    android:textSize="23sp"
+                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     />
@@ -354,11 +340,10 @@
                 android:layout_alignParentBottom="true"
                 android:backgroundTint="@color/colorGrey"
                 android:layout_gravity="center"
-                android:fontFamily="@font/opensans"
+                android:fontFamily="@font/koho"
                 android:gravity="center"
                 android:text="Gọi điện thoại"
                 android:textAllCaps="false"
-                android:textStyle="bold"
                 android:textColor="@color/white"
                 app:iconGravity="textStart"
                 android:drawableLeft="@drawable/baseline_phone_24"
@@ -379,9 +364,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="100dp"
                 android:layout_marginEnd="100dp"
-                android:fontFamily="@font/opensans"
+                android:fontFamily="@font/koho"
                 android:gravity="center"
-                android:textStyle="bold"
                 android:text="Đã giao"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
@@ -411,7 +395,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:backgroundTint="@color/green"
-                    android:fontFamily="@font/opensans"
+                    android:fontFamily="@font/koho"
                     android:text="Giao đến địa chỉ này!"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
@@ -428,9 +412,8 @@
                     android:backgroundTint="@color/red"
                     android:layout_marginTop="10dp"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/opensans"
+                    android:fontFamily="@font/koho"
                     android:gravity="center"
-                    android:textStyle="bold"
                     android:text="Không giao được"
                     android:textAllCaps="false"
                     android:textColor="@color/white"

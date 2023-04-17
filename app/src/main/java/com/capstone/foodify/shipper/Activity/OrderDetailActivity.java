@@ -557,4 +557,14 @@ public class OrderDetailActivity extends AppCompatActivity {
         Common.CURRENT_ORDER = null;
         Common.FCM_TOKEN_CUSTOMER = null;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        stopLocationService();
+        startActivity(new Intent(OrderDetailActivity.this, MainActivity.class));
+        finish();
+        overridePendingTransition(0,0);
+    }
 }

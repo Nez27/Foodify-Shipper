@@ -101,7 +101,7 @@ public class CancelOrder extends Fragment {
 
     private void getListOrder(){
         if(Common.CURRENT_SHIPPER != null){
-            FoodApiToken.apiService.getListOrder(Common.CURRENT_SHIPPER.getId(), "SHIPPING", CURRENT_PAGE++, PAGE_SIZE, SORT_BY, SORT_DIR).enqueue(new Callback<Orders>() {
+            FoodApiToken.apiService.getListOrder(Common.CURRENT_SHIPPER.getId(), "REJECT_DELIVERY", CURRENT_PAGE++, PAGE_SIZE, SORT_BY, SORT_DIR).enqueue(new Callback<Orders>() {
                 @Override
                 public void onResponse(Call<Orders> call, Response<Orders> response) {
                     if(response.code() == 200){

@@ -195,8 +195,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     private void setFontUI() {
-        textInput_password.setTypeface(Common.setFontBebas(getAssets()));
-        textInput_old_password.setTypeface(Common.setFontBebas(getAssets()));
-        textInput_password_confirm.setTypeface(Common.setFontBebas(getAssets()));
+        textInput_password.setTypeface(Common.setFontKoho(getAssets()));
+        textInput_old_password.setTypeface(Common.setFontKoho(getAssets()));
+        textInput_password_confirm.setTypeface(Common.setFontKoho(getAssets()));
     }
 }

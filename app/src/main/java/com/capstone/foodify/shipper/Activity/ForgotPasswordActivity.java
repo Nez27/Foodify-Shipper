@@ -121,7 +121,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
     private void setFontUI() {
 
-        textInput_email.setTypeface(Common.setFontBebas(getAssets()));
+        textInput_email.setTypeface(Common.setFontKoho(getAssets()));
     }
 
     private void initComponent() {
