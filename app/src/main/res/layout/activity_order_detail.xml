@@ -333,67 +333,64 @@
 
             </LinearLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_call"
-                android:layout_width="250dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:backgroundTint="@color/colorGrey"
-                android:layout_gravity="center"
-                android:fontFamily="@font/koho"
-                android:gravity="center"
-                android:text="Gọi điện thoại"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                app:iconGravity="textStart"
-                android:drawableLeft="@drawable/baseline_phone_24"
-                android:drawableTint="@color/white"
-                android:layout_marginTop="30dp"
-                android:layout_marginStart="100dp"
-                android:layout_marginEnd="100dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/total_cost_layout"
-                />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_confirm_ship_complete"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="100dp"
-                android:layout_marginEnd="100dp"
-                android:fontFamily="@font/koho"
-                android:gravity="center"
-                android:text="Đã giao"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                app:iconGravity="textStart"
-                android:drawableLeft="@drawable/baseline_verified_24"
-                android:drawableTint="@color/white"
-                app:layout_constraintTop_toBottomOf="@id/btn_call"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:visibility="gone"
-                />
-
-            <LinearLayout
-                android:id="@+id/layout1"
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/btn_call"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:visibility="visible"
+                android:id="@+id/layout2"
                 >
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_call"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:backgroundTint="@color/colorGrey"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/koho"
+                    android:gravity="center"
+                    android:text="Gọi điện thoại"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:iconGravity="textStart"
+                    android:drawableLeft="@drawable/baseline_phone_24"
+                    android:drawableTint="@color/white"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginStart="100dp"
+                    android:layout_marginEnd="100dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_confirm_ship_complete"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="100dp"
+                    android:layout_marginEnd="100dp"
+                    android:fontFamily="@font/koho"
+                    android:gravity="center"
+                    android:text="Đã giao"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:iconGravity="textStart"
+                    android:drawableLeft="@drawable/baseline_verified_24"
+                    android:drawableTint="@color/white"
+                    app:layout_constraintTop_toBottomOf="@id/btn_call"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:visibility="gone"
+                    />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_shipping"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
                     android:backgroundTint="@color/green"
                     android:fontFamily="@font/koho"
                     android:text="Giao đến địa chỉ này!"
@@ -402,27 +399,32 @@
                     android:layout_marginTop="10dp"
                     android:drawableLeft="@drawable/baseline_local_shipping_24"
                     android:drawableTint="@color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btn_call"
+                    android:visibility="visible"
                     />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_cancel_order"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:backgroundTint="@color/red"
-                    android:layout_marginTop="10dp"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/koho"
-                    android:gravity="center"
-                    android:text="Không giao được"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    app:iconGravity="textStart"
-                    android:drawableLeft="@drawable/baseline_cancel_24"
-                    android:drawableTint="@color/white"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-            </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancel_order"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/red"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/koho"
+                android:text="Không giao được"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:iconGravity="textStart"
+                android:drawableLeft="@drawable/baseline_cancel_24"
+                android:drawableTint="@color/white"
+                app:layout_constraintTop_toBottomOf="@id/layout2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

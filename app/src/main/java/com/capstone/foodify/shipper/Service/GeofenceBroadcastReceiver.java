@@ -1,4 +1,4 @@
-package com.capstone.foodify.shipper.GoogleMap;
+package com.capstone.foodify.shipper.Service;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.util.Log;
 import com.capstone.foodify.shipper.API.FirebaseMessagingAPI;
 import com.capstone.foodify.shipper.Activity.OrderDetailActivity;
 import com.capstone.foodify.shipper.Common;
+import com.capstone.foodify.shipper.GoogleMap.NotificationHelper;
 import com.capstone.foodify.shipper.Model.FirebaseMessaging.FirebaseMessaging;
 import com.capstone.foodify.shipper.Model.FirebaseMessaging.Notification;
 import com.google.android.gms.location.Geofence;

@@ -7,7 +7,6 @@ import static com.capstone.foodify.shipper.Common.REQUEST_CHECK_SETTINGS;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
-import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -21,7 +20,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,9 +34,8 @@ import com.capstone.foodify.shipper.API.GoogleMapApi;
 import com.capstone.foodify.shipper.API.TokenFCMFirebaseAPI;
 import com.capstone.foodify.shipper.Adapter.OrderDetailAdapter;
 import com.capstone.foodify.shipper.Common;
-import com.capstone.foodify.shipper.Fragment.OrderFragment;
 import com.capstone.foodify.shipper.GoogleMap.GeofenceHelper;
-import com.capstone.foodify.shipper.LocationService;
+import com.capstone.foodify.shipper.Service.LocationService;
 import com.capstone.foodify.shipper.Model.CustomResponse;
 import com.capstone.foodify.shipper.Model.GoogleMap.GoogleMapResponse;
 import com.capstone.foodify.shipper.Model.Order;
@@ -61,6 +58,9 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.sjapps.library.customdialog.BasicDialog;
+import com.sjapps.library.customdialog.DialogButtonEvents;
+import com.sjapps.library.customdialog.SJDialog;
 import com.thecode.aestheticdialogs.AestheticDialog;
 import com.thecode.aestheticdialogs.DialogStyle;
 import com.thecode.aestheticdialogs.DialogType;
@@ -84,7 +84,6 @@ public class OrderDetailActivity extends AppCompatActivity {
     ConstraintLayout progressLayout;
     RecyclerView rcv_list_order;
     OrderDetailAdapter adapter;
-    LinearLayout layout1;
     private GeofencingClient geofencingClient;
     private GeofenceHelper geofenceHelper;
     private float GEOFENCE_RADIUS = 200;
@@ -192,14 +191,15 @@ public class OrderDetailActivity extends AppCompatActivity {
         btn_confirm_ship_completed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateStatus(COMPLETE_STATUS);
+
+                showDialogConfirm( "Đã hoàn thành đơn #" + order.getOrderTrackingNumber() + "?", COMPLETE_STATUS);
             }
         });
 
         btn_cancel_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateStatus(CANCEL_STATUS);
+                showDialogConfirm("Huỷ đơn #" + order.getOrderTrackingNumber() + "?" , CANCEL_STATUS);
             }
         });
 
@@ -226,9 +226,53 @@ public class OrderDetailActivity extends AppCompatActivity {
             }, 5000);
         } else {
             btn_call.setVisibility(View.GONE);
-            layout1.setVisibility(View.GONE);
+            btn_shipping.setVisibility(View.GONE);
+            btn_cancel_order.setVisibility(View.GONE);
+            btn_confirm_ship_completed.setVisibility(View.GONE);
+
             progressLayout.setVisibility(View.GONE);
         }
+    }
+
+    private void showDialogConfirm(String message, String status){
+        BasicDialog dialog = new BasicDialog();
+        dialog.Builder(this);
+
+        //Set title
+        dialog.setTitle("Xác nhận?");
+        //Set message
+        dialog.setMessage(message);
+        //Set title text alignment
+        dialog.setTitleAlignment(SJDialog.TEXT_ALIGNMENT_CENTER);
+        //Set message text alignment
+        dialog.setMessageAlignment(SJDialog.TEXT_ALIGNMENT_CENTER);
+        //Set left button text
+        dialog.setLeftButtonText("Xác nhận");
+        //Set right button text
+        dialog.setRightButtonText("Không");
+
+        //Set left button color
+        dialog.setLeftButtonColor(getResources().getColor(R.color.primaryColor, null));
+        //Set right button color
+        dialog.setRightButtonColor(getResources().getColor(R.color.gray, null));
+
+        //Set dialog animations
+        dialog.swipeToDismiss(true);
+
+        dialog.onButtonClick(new DialogButtonEvents() {
+            @Override
+            public void onLeftButtonClick() {
+                updateStatus(status);
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onRightButtonClick() {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     private void getFCMTokenUser(){
@@ -301,8 +345,6 @@ public class OrderDetailActivity extends AppCompatActivity {
         txt_order_time = findViewById(R.id.txt_order_time);
 
         rcv_list_order = findViewById(R.id.list_order);
-
-        layout1 = findViewById(R.id.layout1);
 
         progressLayout = findViewById(R.id.progress_layout);
 
@@ -495,10 +537,10 @@ public class OrderDetailActivity extends AppCompatActivity {
 
     private void changeLayoutButton(double lat1, double lng1) {
         if(distance(lat1, lng1, order.getLat(), order.getLng()) < 0.2){
-            layout1.setVisibility(View.GONE);
+            btn_shipping.setVisibility(View.GONE);
             btn_confirm_ship_completed.setVisibility(View.VISIBLE);
         } else {
-            layout1.setVisibility(View.VISIBLE);
+            btn_shipping.setVisibility(View.VISIBLE);
             btn_confirm_ship_completed.setVisibility(View.GONE);
         }
     }

@@ -1,4 +1,4 @@
-package com.capstone.foodify.shipper;
+package com.capstone.foodify.shipper.Service;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.capstone.foodify.shipper.Common;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.GetTokenResult;

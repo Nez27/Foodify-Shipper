@@ -16,3 +16,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Foodify Shipper"
 include ':app'
+include ':aestheticdialogs'
+include ':SJDialog'

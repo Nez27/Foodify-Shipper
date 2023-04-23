@@ -27,7 +27,7 @@
             android:exported="false" />
 
         <receiver
-            android:name=".GoogleMap.GeofenceBroadcastReceiver"
+            android:name=".Service.GeofenceBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -36,7 +36,7 @@
         </receiver>
 
         <service
-            android:name=".LocationService"
+            android:name=".Service.LocationService"
             android:enabled="true"
             android:exported="false" />
 
@@ -65,14 +65,14 @@
             />
 
         <service
-            android:name=".NotificationService"
+            android:name=".Service.NotificationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <service android:name=".RefreshTokenService"
+        <service android:name=".Service.RefreshTokenService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             />
     </application>

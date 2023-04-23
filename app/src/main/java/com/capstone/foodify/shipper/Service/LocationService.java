@@ -1,4 +1,4 @@
-package com.capstone.foodify.shipper;
+package com.capstone.foodify.shipper.Service;
 
 import static com.capstone.foodify.shipper.Common.ACTION_START_LOCATION_SERVICE;
 import static com.capstone.foodify.shipper.Common.ACTION_STOP_LOCATION_SERVICE;
@@ -25,7 +25,9 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+import com.capstone.foodify.shipper.Common;
 import com.capstone.foodify.shipper.Model.GoogleMap.Location;
+import com.capstone.foodify.shipper.R;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;

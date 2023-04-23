@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,31 +27,25 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.capstone.foodify.shipper.API.FoodApiToken;
 import com.capstone.foodify.shipper.BuildConfig;
 import com.capstone.foodify.shipper.Common;
-import com.capstone.foodify.shipper.Fragment.OrderFragment;
 import com.capstone.foodify.shipper.Model.CustomResponse;
 import com.capstone.foodify.shipper.R;
-import com.capstone.foodify.shipper.RefreshTokenService;
+import com.capstone.foodify.shipper.Service.RefreshTokenService;
 import com.capstone.foodify.shipper.ViewPagerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.appdistribution.AppDistributionRelease;
-import com.google.firebase.appdistribution.FirebaseAppDistribution;
-import com.google.firebase.appdistribution.InterruptionLevel;
 import com.google.firebase.appdistribution.OnProgressListener;
 import com.google.firebase.appdistribution.UpdateProgress;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.techiness.progressdialoglibrary.ProgressDialog;
 
-import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.List;
 

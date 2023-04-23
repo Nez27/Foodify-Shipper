@@ -1,4 +1,4 @@
-package com.capstone.foodify.shipper;
+package com.capstone.foodify.shipper.Service;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -18,7 +18,9 @@ import androidx.core.app.NotificationCompat;
 
 import com.capstone.foodify.shipper.API.FoodApiToken;
 import com.capstone.foodify.shipper.Activity.MainActivity;
+import com.capstone.foodify.shipper.Common;
 import com.capstone.foodify.shipper.Model.CustomResponse;
+import com.capstone.foodify.shipper.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
