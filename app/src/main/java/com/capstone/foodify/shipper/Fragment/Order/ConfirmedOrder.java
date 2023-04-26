@@ -33,8 +33,8 @@ import retrofit2.Response;
 public class ConfirmedOrder extends Fragment {
     private static int CURRENT_PAGE = 0;
     private static final int PAGE_SIZE = 8;
-    private static final String SORT_BY = "id";
-    private static final String SORT_DIR = "asc";
+    private static final String SORT_BY = "orderTime";
+    private static final String SORT_DIR = "desc";
     private static boolean LAST_PAGE = false;
     private final List<Order> listOrders = new ArrayList<>();
     RecyclerView recyclerView;

@@ -58,6 +58,8 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sjapps.library.customdialog.BasicDialog;
 import com.sjapps.library.customdialog.DialogButtonEvents;
 import com.sjapps.library.customdialog.SJDialog;
@@ -119,7 +121,6 @@ public class OrderDetailActivity extends AppCompatActivity {
 
         initComponent();
         initData();
-
         getFCMTokenUser();
 
 
@@ -142,40 +143,38 @@ public class OrderDetailActivity extends AppCompatActivity {
         btn_shipping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Common.CURRENT_ORDER == null) {
 
-                    //Change order status
-                    FoodApiToken.apiService.changeStatusOrder(order.getUser().getId(), order.getId(), "SHIPPING").enqueue(new Callback<CustomResponse>() {
-                        @Override
-                        public void onResponse(Call<CustomResponse> call, Response<CustomResponse> response) {
-                            if(response.code() == 200){
-                                //If success
+                startLocationService();
 
-                                LatLng latLng = new LatLng(order.getLat(), order.getLng());
-                                addGeofence(latLng, GEOFENCE_RADIUS);
+                //Change order status
+                FoodApiToken.apiService.changeStatusOrder(order.getUser().getId(), order.getId(), "SHIPPING").enqueue(new Callback<CustomResponse>() {
+                    @Override
+                    public void onResponse(Call<CustomResponse> call, Response<CustomResponse> response) {
+                        if(response.code() == 200){
+                            //If success
 
-                                Common.CURRENT_ORDER = order;
+                            LatLng latLng = new LatLng(order.getLat(), order.getLng());
+                            addGeofence(latLng, GEOFENCE_RADIUS);
 
-                                startLocationService();
+                            Common.CURRENT_ORDER = order;
 
-                                Intent intent = new Intent(Intent.ACTION_VIEW,
-                                        Uri.parse("google.navigation:q=" + order.getLat() + "," + order.getLng() + "&mode=l"));
-                                intent.setPackage("com.google.android.apps.maps");
-                                startActivity(intent);
-                            } else {
-                                //If error
-                                Toast.makeText(OrderDetailActivity.this, "", Toast.LENGTH_SHORT).show();
-                            }
+
+
+                            Intent intent = new Intent(Intent.ACTION_VIEW,
+                                    Uri.parse("google.navigation:q=" + order.getLat() + "," + order.getLng() + "&mode=l"));
+                            intent.setPackage("com.google.android.apps.maps");
+                            startActivity(intent);
+                        } else {
+                            //If error
+                            Toast.makeText(OrderDetailActivity.this, "Đã có lỗi xảy ra! Mã lỗi: " + response.code(), Toast.LENGTH_SHORT).show();
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<CustomResponse> call, Throwable t) {
-                            Toast.makeText(OrderDetailActivity.this, Common.ERROR_CONNECT_SERVER, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else{
-                    Common.showErrorDialog(OrderDetailActivity.this, "Không thể lấy được thông tin đơn, vui lòng thử lại sau!");
-                }
+                    @Override
+                    public void onFailure(Call<CustomResponse> call, Throwable t) {
+                        Toast.makeText(OrderDetailActivity.this, Common.ERROR_CONNECT_SERVER, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             }
         });
@@ -305,6 +304,14 @@ public class OrderDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<CustomResponse> call, Response<CustomResponse> response) {
                 if(response.code() == 200){
+
+                    //Remove position on database
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference orderDatabase = database.getReference("Order");
+
+                    orderDatabase.child(order.getOrderTrackingNumber()).removeValue();
+
+                    //Show notification
                     new AestheticDialog.Builder(OrderDetailActivity.this, DialogStyle.TOASTER, DialogType.SUCCESS)
                             .setTitle("THÔNG BÁO!")
                             .setMessage("Đã thay đổi trạng thái đơn thành công!")
@@ -586,6 +593,8 @@ public class OrderDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        stopLocationService();
 
         if(Common.CURRENT_LOCATION != null){
             changeLayoutButton(Common.CURRENT_LOCATION.getLatitude(), Common.CURRENT_LOCATION.getLongitude());
