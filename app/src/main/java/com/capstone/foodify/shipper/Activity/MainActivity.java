@@ -41,6 +41,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.appdistribution.AppDistributionRelease;
+import com.google.firebase.appdistribution.InterruptionLevel;
 import com.google.firebase.appdistribution.OnProgressListener;
 import com.google.firebase.appdistribution.UpdateProgress;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -68,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        Common.firebaseAppDistribution.showFeedbackNotification("Cảm ơn đóng góp ý kiến của các bạn",
+//                InterruptionLevel.HIGH);
 
         if(Common.firebaseAppDistribution.isTesterSignedIn()){
 

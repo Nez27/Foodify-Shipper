@@ -1,8 +1,5 @@
 package com.capstone.foodify.shipper.Fragment;
 
-import static com.capstone.foodify.shipper.Common.firebaseAppDistribution;
-
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,8 +13,8 @@ import androidx.fragment.app.Fragment;
 
 import com.capstone.foodify.shipper.Activity.AccountAndProfileActivity;
 import com.capstone.foodify.shipper.Activity.ChangePasswordActivity;
-import com.capstone.foodify.shipper.Activity.MainActivity;
 import com.capstone.foodify.shipper.Activity.SignInActivity;
+import com.capstone.foodify.shipper.Activity.WebViewActivity;
 import com.capstone.foodify.shipper.Common;
 import com.capstone.foodify.shipper.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +26,7 @@ import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment {
     EditText edt_birthday, edt_phone, edt_fullName, edt_email;
-    LinearLayout changePasswordLayout, changeInformationLayout, logOutLayout, feed_back;
+    LinearLayout changePasswordLayout, changeInformationLayout, logOutLayout, register_app_beta;
     RoundedImageView profile_avatar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,10 +56,10 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        feed_back.setOnClickListener(new View.OnClickListener() {
+        register_app_beta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                firebaseAppDistribution.startFeedback("Cảm ơn vì sự đóng góp ý kiến từ các bạn!");
+                startActivity(new Intent(getActivity(), WebViewActivity.class));
             }
         });
 
@@ -86,7 +83,7 @@ public class ProfileFragment extends Fragment {
         changePasswordLayout = view.findViewById(R.id.change_password);
         changeInformationLayout = view.findViewById(R.id.change_information);
         logOutLayout = view.findViewById(R.id.log_out);
-        feed_back = view.findViewById(R.id.feedback);
+        register_app_beta = view.findViewById(R.id.register_beta_app);
 
         edt_phone = view.findViewById(R.id.edt_phone);
         edt_birthday = view.findViewById(R.id.edt_birthDay);
