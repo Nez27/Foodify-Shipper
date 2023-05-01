@@ -79,6 +79,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     private static final String TAG = "OrderDetailActivity";
     private static final String COMPLETE_STATUS = "COMPLETED";
     private static final String CANCEL_STATUS = "REJECT_DELIVERY";
+    private static final String SHIPPING_STATUS = "SHIPPING";
     Order order;
     Button btn_shipping, btn_call, btn_confirm_ship_completed, btn_cancel_order;
     TextView order_tracking_number, txt_user_name, txt_phone, txt_address, txt_distance, txt_status, txt_total,
@@ -147,7 +148,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                 startLocationService();
 
                 //Change order status
-                FoodApiToken.apiService.changeStatusOrder(order.getUser().getId(), order.getId(), "SHIPPING").enqueue(new Callback<CustomResponse>() {
+                FoodApiToken.apiService.changeStatusOrder(order.getUser().getId(), order.getId(), SHIPPING_STATUS).enqueue(new Callback<CustomResponse>() {
                     @Override
                     public void onResponse(Call<CustomResponse> call, Response<CustomResponse> response) {
                         if(response.code() == 200){
@@ -156,9 +157,10 @@ public class OrderDetailActivity extends AppCompatActivity {
                             LatLng latLng = new LatLng(order.getLat(), order.getLng());
                             addGeofence(latLng, GEOFENCE_RADIUS);
 
+                            order.setStatus(SHIPPING_STATUS);
                             Common.CURRENT_ORDER = order;
 
-
+                            txt_status.setText(translateStatus(SHIPPING_STATUS));
 
                             Intent intent = new Intent(Intent.ACTION_VIEW,
                                     Uri.parse("google.navigation:q=" + order.getLat() + "," + order.getLng() + "&mode=l"));
