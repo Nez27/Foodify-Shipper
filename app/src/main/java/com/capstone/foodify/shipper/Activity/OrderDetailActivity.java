@@ -208,7 +208,7 @@ public class OrderDetailActivity extends AppCompatActivity {
         geofencingClient = LocationServices.getGeofencingClient(this);
         geofenceHelper = new GeofenceHelper(this);
 
-        if(!order.getStatus().equals(COMPLETE_STATUS)){
+        if(!order.getStatus().equals(COMPLETE_STATUS) || !order.getStatus().equals(CANCEL_STATUS)){
             getLocation();
 
             final Handler handler = new Handler(Looper.getMainLooper());
