@@ -5,6 +5,16 @@ plugins {
 }
 
 android {
+
+    signingConfigs {
+        release {
+            storeFile file('D:\\Capstone-Project\\mykeystore\\foodify-shipper.jks')
+            storePassword 'Phanhuuloi2@@1'
+            keyAlias 'foodify-shipper'
+            keyPassword 'Phanhuuloi2@@1'
+        }
+    }
+
     namespace 'com.capstone.foodify.shipper'
     compileSdk 31
 
@@ -34,6 +44,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -76,6 +87,6 @@ dependencies {
     // ADD the API-only library to all variants
     implementation 'com.google.firebase:firebase-appdistribution:16.0.0-beta08'
 
-    implementation(project(':aestheticdialogs'))
-    implementation(project(':SJDialog'))
+    implementation 'com.github.gabriel-TheCode:AestheticDialogs:1.3.6'
+    implementation 'com.github.SlaVcE14:SJ-Dialog:1.6'
 }

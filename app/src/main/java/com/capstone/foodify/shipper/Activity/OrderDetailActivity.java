@@ -208,7 +208,14 @@ public class OrderDetailActivity extends AppCompatActivity {
         geofencingClient = LocationServices.getGeofencingClient(this);
         geofenceHelper = new GeofenceHelper(this);
 
-        if(!order.getStatus().equals(COMPLETE_STATUS) || !order.getStatus().equals(CANCEL_STATUS)){
+        if(order.getStatus().equals(COMPLETE_STATUS) || order.getStatus().equals(CANCEL_STATUS)){
+            btn_call.setVisibility(View.GONE);
+            btn_shipping.setVisibility(View.GONE);
+            btn_cancel_order.setVisibility(View.GONE);
+            btn_confirm_ship_completed.setVisibility(View.GONE);
+
+            progressLayout.setVisibility(View.GONE);
+        } else {
             getLocation();
 
             final Handler handler = new Handler(Looper.getMainLooper());
@@ -225,13 +232,6 @@ public class OrderDetailActivity extends AppCompatActivity {
                     }
                 }
             }, 5000);
-        } else {
-            btn_call.setVisibility(View.GONE);
-            btn_shipping.setVisibility(View.GONE);
-            btn_cancel_order.setVisibility(View.GONE);
-            btn_confirm_ship_completed.setVisibility(View.GONE);
-
-            progressLayout.setVisibility(View.GONE);
         }
     }
 
