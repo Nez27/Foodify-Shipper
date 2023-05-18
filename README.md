@@ -27,6 +27,7 @@ Profile               |Information Account               |Order
 
 ## Demo
 - Download app from [here](https://nezumi-onedrive.vercel.app/api/raw/?path=/Foodify/foodify-shipper.apk).
+- Account test: shipper001@gmail.com | P@ssword123
 
 ## Credits
 - Created by Nezumi.
