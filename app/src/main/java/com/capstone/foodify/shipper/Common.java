@@ -31,7 +31,7 @@ public class Common {
     public static Location CURRENT_LOCATION = null;
     public static final FirebaseAppDistribution firebaseAppDistribution = FirebaseAppDistribution.getInstance();
     public static final String BASE_URL = "https://foodify.up.railway.app/api/";
-    public static final String MAP_API = "AIzaSyADfFAkQxU6yfPAUsNfZjHgFgFwQnNeeWY";
+    public static final String MAP_API = "YOUR_API";
     public static final String FORMAT_DATE="dd-MM-yyyy";
     public static final String VALID_EMAIL_ADDRESS_REGEX = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
     public static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!_])(?=\\S+$).{4,}$";
